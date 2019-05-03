@@ -12,7 +12,7 @@ namespace T4Editor
     {
         public T4ClassFeature()
         {
-            this.ForegroundColor = Colors.DodgerBlue;
+            this.ForegroundColor = Colors.MediumSeaGreen;
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -24,7 +24,7 @@ namespace T4Editor
     {
         public T4Statement()
         {
-            this.ForegroundColor = Colors.DarkSeaGreen;
+            this.ForegroundColor = Colors.DeepSkyBlue;
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -36,7 +36,7 @@ namespace T4Editor
     {
         public T4Directive()
         {
-            this.ForegroundColor = Colors.DarkTurquoise;
+            this.ForegroundColor = Colors.Peru;
             this.BackgroundColor = Colors.Transparent;
         }
     }
