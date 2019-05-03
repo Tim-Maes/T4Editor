@@ -32,11 +32,11 @@ namespace T4Editor
             if (snapshot.Length == 0)
                 return spans;
 
-            var directiveRegex = @"<#@ (.|\n)*? (#>)";
+            var directiveRegex = @"<#@.*?#>";
             var classFeatureBlockRegex = "<#[+]((?!#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–/\\/®°⁰!?{}|`~])*#>";
             var statementBlockRegex = "<#(?!@|#|=|\\+)((?!#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/\\\\®°⁰!?{}|`~])*#>";
-            var injectedRegex = "<#=([\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/®°⁰!?{}|`~])*?(\\s?)#>";
-            var outputRegex = "#>(((?!#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/®°⁰!?{}|`~])*(\\s?\\n?\\d?))<#";
+            var injectedRegex = "(<#=.*?#>)";
+            var outputRegex = "#>(((?!<#=)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/®°⁰!?{}|`~])*(\\s?\\n?\\d?))<#";
 
             var document = snapshot.GetText();
 
