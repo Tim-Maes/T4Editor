@@ -4,12 +4,8 @@ using System.ComponentModel.Composition;
 
 namespace T4Editor
 {
-    /// <summary>
-    /// Classification type definition export for T4Classifier
-    /// </summary>
     internal static class T4ClassifierClassificationDefinition
     {
-        // This disables "The field is never used" compiler's warning. Justification: the field is used by MEF.
 #pragma warning disable 169
 
         [Export]
@@ -26,8 +22,6 @@ namespace T4Editor
         [FileExtension(".ttinclude")]
         [ContentType("T4")]
         internal static FileExtensionToContentTypeDefinition ttincludeFileExtensionDefinition;
-
-        #region Classification Type Definitions
 
         [Export]
         [Name("T4")]
@@ -57,9 +51,6 @@ namespace T4Editor
         [Name("T4.Injected")]
         [BaseDefinition("T4")]
         internal static ClassificationTypeDefinition injectDefinition;
-
-        #endregion
-
 
 #pragma warning restore 169
     }

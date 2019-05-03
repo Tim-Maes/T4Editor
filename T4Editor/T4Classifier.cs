@@ -6,9 +6,6 @@ using System.Text.RegularExpressions;
 
 namespace T4Editor
 {
-    /// <summary>
-    /// Classifier that classifies all text as an instance of the "T4Classifier" classification type.
-    /// </summary>
     internal class T4Classifier : IClassifier
     {
         private readonly ITextBuffer _buffer;
@@ -19,8 +16,6 @@ namespace T4Editor
             this._buffer = buffer;
             this._classificationTypeRegistry = registry;
         }
-
-        #region IClassifier
 
 #pragma warning disable 67
 
@@ -116,7 +111,5 @@ namespace T4Editor
             return spans;
         }
     }
-
-    #endregion
 }
 
