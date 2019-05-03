@@ -1,17 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<Title>T4Editor</Title>
-		<Description>Editor for T4 Templates</Description>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Company>Epsicode</Company>
-		<Version>1.0.0.0</Version>
-		<Authors>Epsilekt</Authors>
-		<PackageProjectUrl>https://github.com/Epsilekt/T4Editor</PackageProjectUrl>
-		<License>MIT</License>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/Epsilekt/T4Editor</RepositoryUrl>
-	</PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
