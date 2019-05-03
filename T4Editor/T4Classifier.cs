@@ -21,6 +21,11 @@ namespace T4Editor
 
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
 
+        protected virtual void OnClassificationChanged(ClassificationChangedEventArgs e)
+        {
+            ClassificationChanged?.Invoke(this, e);
+        }
+
 #pragma warning restore 67
 
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
