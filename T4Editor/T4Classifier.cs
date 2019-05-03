@@ -52,7 +52,6 @@ namespace T4Editor
             MatchCollection outputMatches = Regex.Matches(document, outputRegex);
 
             IClassificationType type = null;
-            IClassificationType codeType = _classificationTypeRegistry.GetClassificationType("code");
 
             foreach (Match match in directiveMatches)
             {

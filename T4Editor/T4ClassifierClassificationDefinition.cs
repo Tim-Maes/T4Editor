@@ -14,7 +14,7 @@ namespace T4Editor
 
         [Export]
         [Name("T4")]
-        [BaseDefinition("text")]
+        [BaseDefinition("code")]
         internal static ContentTypeDefinition ContentDefinition;
 
         [Export]
