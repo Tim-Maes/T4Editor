@@ -12,7 +12,7 @@ namespace T4Editor
     {
         public T4ClassFeature()
         {
-            this.ForegroundColor = Colors.Goldenrod;
+            this.ForegroundColor = Colors.BlanchedAlmond;
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -60,7 +60,7 @@ namespace T4Editor
     {
         public InjectedDirective()
         {
-            this.ForegroundColor = Colors.Gold;
+            this.ForegroundColor = Colors.Goldenrod;
             this.BackgroundColor = Colors.Transparent;
         }
     }

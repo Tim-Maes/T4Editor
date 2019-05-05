@@ -38,7 +38,7 @@ namespace T4Editor
                 return spans;
 
             var directiveRegex = @"<#@.*?#>";
-            var classFeatureBlockRegex = "<#[+]((?!#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–/\\/®°⁰!?{}|`~])*#>";
+            var classFeatureBlockRegex = "<#[+]((?!#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\\\/®°⁰!?{}|`~])*#>";
             var statementBlockRegex = "<#(?!@|#|=|\\+)((?!#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/\\\\®°⁰!?{}|`~])*#>";
             var injectedRegex = "(<#=.*?#>)";
             var outputRegex = "#>(((?!<#=)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/®°⁰!?{}|`~])*(\\s?\\n?\\d?))<#";
