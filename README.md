@@ -7,6 +7,4 @@ You can now set custom colors via `Extensions > T4Editor > Adjust Colors`
 
 ![ColorPickerMenu](https://i.ibb.co/GkgNZs9/Color-Picker.png")
 
-## TO DO
 
-C# syntax highlighting withing these control / class feature blocks.
