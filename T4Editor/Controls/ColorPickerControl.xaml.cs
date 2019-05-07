@@ -48,9 +48,9 @@ namespace T4Editor.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
             var myWindow = Window.GetWindow(this);
             myWindow.Close();
+            MessageBox.Show("Restart Visual Studio for changes to apply.");
         }
     }
 }
