@@ -26,6 +26,11 @@ namespace T4Editor
             ClassificationChanged?.Invoke(this, e);
         }
 
+        public ClassificationSpan CreateClassificationSpan(ITextSnapshot snapshot, int index, int length, IClassificationType type)
+        {
+            return new ClassificationSpan(new SnapshotSpan(new SnapshotPoint(snapshot, index), length), type);
+        }
+
 #pragma warning restore 67
 
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
@@ -37,11 +42,11 @@ namespace T4Editor
             if (snapshot.Length == 0)
                 return spans;
 
-            var directiveRegex = @"<#@.*?#>";
-            var classFeatureBlockRegex = "<#[+]((?!#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\\\/®°⁰!?{}|`~])*#>";
-            var statementBlockRegex = "<#((?!@|#|=|\\+)((?!#>)[\\s\\w|\\d|\n|\t|().,<>\\-:;@#$%^&=*\\[\\]\"'+–\\/\\\\®°⁰!?{}|`~])*)#>";
-            var injectedRegex = "(<#=.*?(?=\\s?)#>)";
-            var outputRegex = "#>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\\n?)(?=<#|\\Z)";
+            var directiveRegex = "(?<=<#@)((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\\n?)(?=#>)";
+            var classFeatureBlockRegex = "(?<=<#\\+)((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\\n?)(?=#>)";
+            var statementBlockRegex = "<#((?!=|@|\\+))((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s?|\\w?|\n?)#>";
+            var injectedRegex = "<#=((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(\\s?)#>";
+            var outputRegex = "(?<=#>)(((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\n?))(?=<#)";
 
             var document = snapshot.GetText();
 
@@ -58,10 +63,7 @@ namespace T4Editor
                 if (match.Success)
                 {
                     type = _classificationTypeRegistry.GetClassificationType("T4.Directive");
-                    var length = match.Value.Length;
-                    var index = match.Index;
-                    var directiveSpan = new ClassificationSpan(new SnapshotSpan(new SnapshotPoint(snapshot, index), length), type);
-                    spans.Add(directiveSpan);
+                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
 
@@ -70,10 +72,7 @@ namespace T4Editor
                 if (match.Success)
                 {
                     type = _classificationTypeRegistry.GetClassificationType("T4.ClassFeatureBlock");
-                    var length = match.Value.Length;
-                    var index = match.Index;
-                    var classFeatureBlockSpan = new ClassificationSpan(new SnapshotSpan(new SnapshotPoint(snapshot, index), length), type);
-                    spans.Add(classFeatureBlockSpan);
+                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
 
@@ -82,10 +81,7 @@ namespace T4Editor
                 if (match.Success)
                 {
                     type = _classificationTypeRegistry.GetClassificationType("T4.StatementBlock");
-                    var length = match.Value.Length;
-                    var index = match.Index;
-                    var statementBlockSpan = new ClassificationSpan(new SnapshotSpan(new SnapshotPoint(snapshot, index), length), type);
-                    spans.Add(statementBlockSpan);
+                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
 
@@ -94,10 +90,7 @@ namespace T4Editor
                 if (match.Success)
                 {
                     type = _classificationTypeRegistry.GetClassificationType("T4.Injected");
-                    var length = match.Value.Length;
-                    var index = match.Index;
-                    var injectedSpan = new ClassificationSpan(new SnapshotSpan(new SnapshotPoint(snapshot, index), length), type);
-                    spans.Add(injectedSpan);
+                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
 
@@ -106,10 +99,7 @@ namespace T4Editor
                 if (match.Success)
                 {
                     type = _classificationTypeRegistry.GetClassificationType("T4.Output");
-                    var length = match.Groups[1].Value.Length;
-                    var index = match.Groups[1].Index;
-                    var outputSpan = new ClassificationSpan(new SnapshotSpan(new SnapshotPoint(snapshot, index), length), type);
-                    spans.Add(outputSpan);
+                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
 

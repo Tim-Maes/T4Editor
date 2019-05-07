@@ -24,7 +24,7 @@ namespace T4Editor
     {
         public T4Statement()
         {
-            this.ForegroundColor = Colors.BlanchedAlmond;
+            this.ForegroundColor = Colors.BurlyWood;
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -62,6 +62,7 @@ namespace T4Editor
         {
             this.ForegroundColor = Colors.Goldenrod;
             this.BackgroundColor = Colors.Transparent;
+            this.IsBold = true;
         }
     }
 }
