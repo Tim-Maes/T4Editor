@@ -3,6 +3,8 @@
 VS2019 extension to highlight T4 Template code blocks.
 Currently supports .tt and .ttinclude extensions.
 
-## TO DO
+You can now set custom colors via `Extensions > T4Editor > Adjust Colors`
 
-C# syntax highlighting withing these control / class feature blocks.
+![ColorPickerMenu](https://i.ibb.co/GkgNZs9/Color-Picker.png")
+
+
