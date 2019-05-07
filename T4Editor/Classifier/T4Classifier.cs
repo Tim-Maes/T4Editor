@@ -42,19 +42,14 @@ namespace T4Editor
             if (snapshot.Length == 0)
                 return spans;
 
-            var directiveRegex = "(?<=<#@)((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\\n?)(?=#>)";
-            var classFeatureBlockRegex = "(?<=<#\\+)((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\\n?)(?=#>)";
-            var statementBlockRegex = "<#((?!=|@|\\+))((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s?|\\w?|\n?)#>";
-            var injectedRegex = "<#=((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(\\s?)#>";
-            var outputRegex = "(?<=#>)(((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~])*(?=\\s|\\w|\n?))(?=<#)";
-
             var document = snapshot.GetText();
 
-            MatchCollection directiveMatches = Regex.Matches(document, directiveRegex);
-            MatchCollection classFeatureBlockMatches = Regex.Matches(document, classFeatureBlockRegex);
-            MatchCollection statementBlockMatches = Regex.Matches(document, statementBlockRegex);
-            MatchCollection injectedMatches = Regex.Matches(document, injectedRegex);
-            MatchCollection outputMatches = Regex.Matches(document, outputRegex);
+            var regEx = new RegEx();
+            MatchCollection directiveMatches = Regex.Matches(document, regEx.directiveRegex);
+            MatchCollection classFeatureBlockMatches = Regex.Matches(document, regEx.classFeatureBlockRegex);
+            MatchCollection statementBlockMatches = Regex.Matches(document, regEx.statementBlockRegex);
+            MatchCollection injectedMatches = Regex.Matches(document, regEx.injectedRegex);
+            MatchCollection outputMatches = Regex.Matches(document, regEx.outputRegex);
 
             IClassificationType type = null;
 
