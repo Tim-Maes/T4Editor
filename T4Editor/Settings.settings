@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="T4Editor" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FeatureBlockColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">	#FFEBCD</Value>
+    </Setting>
+    <Setting Name="InjectedColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#DAA520</Value>
+    </Setting>
+    <Setting Name="StatementBlockColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#DEB887</Value>
+    </Setting>
+    <Setting Name="DirectiveColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#C0C0C0</Value>
+    </Setting>
+    <Setting Name="OutputColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

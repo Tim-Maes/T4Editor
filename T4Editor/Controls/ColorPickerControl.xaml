@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="T4Editor.Controls.ColorPickerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"           
+             xmlns:local="clr-namespace:T4Editor.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="180" d:DesignWidth="350">
+    <Grid>
+        <StackPanel Height="180">
+            <TabControl>
+                <TabItem Header="Statement Blocks">
+                    <StackPanel>
+                        <Label Content="Pick a color for the Statement Blocks" />
+                        <xctk:ColorPicker SelectedColorChanged="StatemenBlockColorPicker_SelectedColorChanged" Name="StatemenBlockColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Class Feature Blocks" >
+                    <StackPanel>
+                       <Label Content="Pick a color for the Class Feature Blocks" ></Label>
+                        <xctk:ColorPicker SelectedColorChanged="FeatureBlockColorPicker_SelectedColorChanged" Name="FeatureBlockColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/> 
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Directives" >
+                    <StackPanel>
+                      <Label Content="Pick a color for the Directives" ></Label>
+                        <xctk:ColorPicker SelectedColorChanged="DirectiveColorPicker_SelectedColorChanged" Name="DirectiveColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>  
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Output" >
+                    <StackPanel>
+                        <Label Content="Pick a color for the Output" ></Label>
+                        <xctk:ColorPicker SelectedColorChanged="OutputColorPicker_SelectedColorChanged" Name="OutputColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Injected" >
+                    <StackPanel>
+                        <Label Content="Pick a color for the Injected parameters" ></Label>
+                        <xctk:ColorPicker SelectedColorChanged="InjectedColorPicker_SelectedColorChanged" Name="InjectedColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+            <Button Margin="15" Height="30" Width="100" Content="Confirm" Click="Button_Click"></Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

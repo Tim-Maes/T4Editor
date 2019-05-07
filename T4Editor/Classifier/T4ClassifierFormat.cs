@@ -12,7 +12,7 @@ namespace T4Editor
     {
         public T4ClassFeature()
         {
-            this.ForegroundColor = Colors.BlanchedAlmond;
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor);
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -24,7 +24,7 @@ namespace T4Editor
     {
         public T4Statement()
         {
-            this.ForegroundColor = Colors.BurlyWood;
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor);
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -36,7 +36,7 @@ namespace T4Editor
     {
         public T4Directive()
         {
-            this.ForegroundColor = Colors.Silver;
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor);
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -48,7 +48,7 @@ namespace T4Editor
     {
         public OutputDirective()
         {
-            this.ForegroundColor = Colors.White;
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor);
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -60,7 +60,7 @@ namespace T4Editor
     {
         public InjectedDirective()
         {
-            this.ForegroundColor = Colors.Goldenrod;
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor);
             this.BackgroundColor = Colors.Transparent;
             this.IsBold = true;
         }

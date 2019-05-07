@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidOpenT4EditorSettingsCommandPackage">
+
+	  <Menus>
+		  <Menu guid="guidOpenT4EditorSettingsCommandPackageCmdSet" id="MyMenuGroup" priority="0x700" type="Menu">
+			  <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+			  <Strings>
+				  <ButtonText>T4Editor</ButtonText>
+				  <CommandName>T4Editor</CommandName>
+			  </Strings>
+		  </Menu>
+	  </Menus>
+
+	  <Groups>
+		  <Group guid="guidOpenT4EditorSettingsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+			  <Parent guid="guidOpenT4EditorSettingsCommandPackageCmdSet" id="MyMenuGroup" />
+		  </Group>
+	  </Groups>
+
+	  <Buttons>
+		  <Button guid="guidOpenT4EditorSettingsCommandPackageCmdSet" id="OpenT4EditorSettingsCommandId" priority="0x0100" type="Button">
+			  <Parent guid="guidOpenT4EditorSettingsCommandPackageCmdSet" id="MyMenuGroup" />
+			  <Icon guid="guidImages" id="bmpPic1" />
+			  <Strings>
+				  <ButtonText>Adjust Colors</ButtonText>
+			  </Strings>
+		  </Button>
+	  </Buttons>
+
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\OpenT4EditorSettingsCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+    </Bitmaps>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="guidOpenT4EditorSettingsCommandPackage" value="{c556d31f-824b-450e-879a-39e102ca1ae4}" />
+
+    <GuidSymbol name="guidOpenT4EditorSettingsCommandPackageCmdSet" value="{bfb75b6d-fe6d-4894-9cde-a1714bc797c2}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="OpenT4EditorSettingsCommandId" value="0x0100" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{38a27fe5-c0f3-451e-89e4-7395bff31bd9}" >
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
