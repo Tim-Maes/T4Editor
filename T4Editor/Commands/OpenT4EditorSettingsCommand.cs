@@ -56,7 +56,8 @@ namespace T4Editor.Commands
                 Content = new ColorPickerControl()
             };
 
-            window.Show();
+            window.ShowDialog();
+            MessageBox.Show("Restart Visual Studio to apply changes.");
         }
     }
 }
