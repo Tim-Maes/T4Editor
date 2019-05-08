@@ -22,11 +22,11 @@ namespace T4Editor.Intellisense
             List<string> strList = new List<string>();
             m_compList = new List<Completion>();
 
-            m_compList.Add(new Completion("Control Block", "<#  #>", "Control Block", null, null));
-            m_compList.Add(new Completion("Class Feature Block", "<#+  #>", "Class Feature Block", null, null));
-            m_compList.Add(new Completion("Expression Block", "<#=  #>", "Expression Block", null, null));
-            m_compList.Add(new Completion("Import Directive", "<#@ import  #>", "Import Directive", null, null));
-            m_compList.Add(new Completion("Include Directive", "<#@ include  #>", "Include Directive", null, null));
+            m_compList.Add(new Completion("<# Control Block #>", "<#  #>", "Control Block", null, null));
+            m_compList.Add(new Completion("<#+ Class Feature Block #>", "<#+  #>", "Class Feature Block", null, null));
+            m_compList.Add(new Completion("<#= Expression Block #>", "<#=  #>", "Expression Block", null, null));
+            m_compList.Add(new Completion("<#@ Import Directive #>", "<#@ import namespace=\"\" #>", "Import Directive", null, null));
+            m_compList.Add(new Completion("<#@ Include Directive #>", "<#@ include file=\"\" #>", "Include Directive", null, null));
 
             completionSets.Add(new CompletionSet(
                 "Tokens",   

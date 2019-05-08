@@ -27,63 +27,59 @@ namespace T4Editor.Intellisense
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (VsShellUtilities.IsInAutomationFunction(m_provider.ServiceProvider))
             {
                 return m_nextCommandHandler.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
             uint commandID = nCmdID;
             char typedChar = char.MinValue;
-            //make sure the input is a char before getting it
             if (pguidCmdGroup == VSConstants.VSStd2K && nCmdID == (uint)VSConstants.VSStd2KCmdID.TYPECHAR)
             {
                 typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
+                System.Diagnostics.Debug.WriteLine("TYPEDCHAR: " + typedChar);
             }
 
-            //check for a commit character
             if (nCmdID == (uint)VSConstants.VSStd2KCmdID.RETURN
                 || nCmdID == (uint)VSConstants.VSStd2KCmdID.TAB
                 || (char.IsWhiteSpace(typedChar) || char.IsPunctuation(typedChar)))
             {
-                //check for a selection
                 if (m_session != null && !m_session.IsDismissed)
                 {
-                    //if the selection is fully selected, commit the current session
                     if (m_session.SelectedCompletionSet.SelectionStatus.IsSelected)
                     {
                         m_session.Commit();
-                        //also, don't add the character to the buffer
                         return VSConstants.S_OK;
                     }
                     else
                     {
-                        //if there is no selection, dismiss the session
                         m_session.Dismiss();
                     }
                 }
             }
 
-            //pass along the command so the char is added to the buffer
             int retVal = m_nextCommandHandler.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             bool handled = false;
-            if (!typedChar.Equals(char.MinValue) && char.IsLetterOrDigit(typedChar))
+            if ((!typedChar.Equals(char.MinValue) && char.IsLetterOrDigit(typedChar)) || typedChar.Equals('<'))
             {
-                if (m_session == null || m_session.IsDismissed) // If there is no active session, bring up completion
+                if (m_session == null || m_session.IsDismissed) 
                 {
                     this.TriggerCompletion();
                     m_session.Filter();
                 }
-                else    //the completion session is already active, so just filter
+                else    
                 {
                     m_session.Filter();
                 }
                 handled = true;
             }
-            else if (commandID == (uint)VSConstants.VSStd2KCmdID.BACKSPACE   //redo the filter if there is a deletion
+            else if (commandID == (uint)VSConstants.VSStd2KCmdID.BACKSPACE   
                 || commandID == (uint)VSConstants.VSStd2KCmdID.DELETE)
             {
                 if (m_session != null && !m_session.IsDismissed)
@@ -96,7 +92,6 @@ namespace T4Editor.Intellisense
 
         private bool TriggerCompletion()
         {
-            //the caret must be in a non-projection location 
             SnapshotPoint? caretPoint =
             m_textView.Caret.Position.Point.GetPoint(
             textBuffer => (!textBuffer.ContentType.IsOfType("projection")), PositionAffinity.Predecessor);
@@ -110,7 +105,6 @@ namespace T4Editor.Intellisense
                 caretPoint.Value.Snapshot.CreateTrackingPoint(caretPoint.Value.Position, PointTrackingMode.Positive),
                 true);
 
-            //subscribe to the Dismissed event on the session 
             m_session.Dismissed += this.OnSessionDismissed;
             m_session.Start();
 
