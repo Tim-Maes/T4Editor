@@ -4,8 +4,10 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace T4Editor.Intellisense
@@ -43,7 +45,6 @@ namespace T4Editor.Intellisense
             if (pguidCmdGroup == VSConstants.VSStd2K && nCmdID == (uint)VSConstants.VSStd2KCmdID.TYPECHAR)
             {
                 typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
-                System.Diagnostics.Debug.WriteLine("TYPEDCHAR: " + typedChar);
             }
 
             if (nCmdID == (uint)VSConstants.VSStd2KCmdID.RETURN
@@ -55,6 +56,9 @@ namespace T4Editor.Intellisense
                     if (m_session.SelectedCompletionSet.SelectionStatus.IsSelected)
                     {
                         m_session.Commit();
+                        ITextViewLine textViewLine = m_textView.Caret.ContainingTextViewLine;
+                        var xCoordinate = m_textView.Caret.ContainingTextViewLine.Right;
+                        m_textView.Caret.MoveTo(textViewLine, xCoordinate - 28.8);
                         return VSConstants.S_OK;
                     }
                     else
@@ -68,18 +72,18 @@ namespace T4Editor.Intellisense
             bool handled = false;
             if ((!typedChar.Equals(char.MinValue) && char.IsLetterOrDigit(typedChar)) || typedChar.Equals('<'))
             {
-                if (m_session == null || m_session.IsDismissed) 
+                if (m_session == null || m_session.IsDismissed)
                 {
                     this.TriggerCompletion();
                     m_session.Filter();
                 }
-                else    
+                else
                 {
                     m_session.Filter();
                 }
                 handled = true;
             }
-            else if (commandID == (uint)VSConstants.VSStd2KCmdID.BACKSPACE   
+            else if (commandID == (uint)VSConstants.VSStd2KCmdID.BACKSPACE
                 || commandID == (uint)VSConstants.VSStd2KCmdID.DELETE)
             {
                 if (m_session != null && !m_session.IsDismissed)
