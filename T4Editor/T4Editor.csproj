@@ -56,6 +56,10 @@
     <Compile Include="Controls\ColorPickerControl.xaml.cs">
       <DependentUpon>ColorPickerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Intellisense\T4CompletionCommandHandler.cs" />
+    <Compile Include="Intellisense\T4CompletionHandlerProvider.cs" />
+    <Compile Include="Intellisense\T4CompletionSource.cs" />
+    <Compile Include="Intellisense\T4CompletionSourceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classifier\T4Classifier.cs" />
     <Compile Include="Classifier\T4ClassifierClassificationDefinition.cs" />
