@@ -1,7 +1,6 @@
 # T4Editor
 
 VS2019 extension to highlight T4 Template code blocks and support code completion.
-Currently for .tt and .ttinclude extensions.
 
 Get it from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=TimMaes.t4editor).
 
