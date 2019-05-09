@@ -1,6 +1,6 @@
 # T4Editor
 
-VS2019 extension to highlight <#code blocks#> and has code completion.
+VS2019 extension to highlight <#code blocks#> in T4 Templates and has code completion.
 
 ![Example](https://i.ibb.co/J3c15ZD/Example.png)
 
