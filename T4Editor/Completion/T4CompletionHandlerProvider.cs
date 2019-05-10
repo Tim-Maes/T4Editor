@@ -1,15 +1,11 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Editor;
+﻿using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
+using System;
+using System.ComponentModel.Composition;
 
 namespace T4Editor.Intellisense
 {
@@ -17,7 +13,7 @@ namespace T4Editor.Intellisense
     [Name("T4 completion handler")]
     [ContentType("T4")]
     [TextViewRole(PredefinedTextViewRoles.Editable)]
-    internal class T4CompletionHandlerProvider: IVsTextViewCreationListener
+    internal class T4CompletionHandlerProvider : IVsTextViewCreationListener
     {
         [Import]
         internal IVsEditorAdaptersFactoryService AdapterService = null;
@@ -32,7 +28,11 @@ namespace T4Editor.Intellisense
             if (textView == null)
                 return;
 
-            Func<T4CompletionCommandHandler> createCommandHandler = delegate () { return new T4CompletionCommandHandler(textViewAdapter, textView, this); };
+            Func<T4CompletionCommandHandler> createCommandHandler = delegate ()
+            {
+                return new T4CompletionCommandHandler(textViewAdapter, textView, this);
+            };
+
             textView.Properties.GetOrCreateSingletonProperty(createCommandHandler);
         }
     }
