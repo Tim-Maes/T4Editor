@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Commands\OpenT4EditorSettingsCommand.cs" />
     <Compile Include="Commands\OpenT4EditorSettingsCommandPackage.cs" />
+    <Compile Include="BraceMatching\T4BraceMatchingProvider.cs" />
+    <Compile Include="BraceMatching\T4BraceMatchingTagger.cs" />
     <Compile Include="Controls\ColorPickerControl.xaml.cs">
       <DependentUpon>ColorPickerControl.xaml</DependentUpon>
     </Compile>

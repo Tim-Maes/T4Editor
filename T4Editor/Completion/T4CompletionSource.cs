@@ -10,7 +10,7 @@ namespace T4Editor.Intellisense
     {
         private T4CompletionSourceProvider _sourceProvider;
         private ITextBuffer _textBuffer;
-        private List<Completion> _completionList;
+        private List<Completion2> _completionList;
 
         public T4CompletionSource(T4CompletionSourceProvider sourceProvider, ITextBuffer textBuffer)
         {
@@ -20,13 +20,13 @@ namespace T4Editor.Intellisense
 
         void ICompletionSource.AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            _completionList = new List<Completion>
+            _completionList = new List<Completion2>
             {
-                new Completion("<# Control Block #>", "<#  #>", "Control Block", null, null),
-                new Completion("<#+ Class Feature Block #>", "<#+  #>", "Class Feature Block", null, null),
-                new Completion("<#= Expression Block #>", "<#=  #>", "Expression Block", null, null),
-                new Completion("<#@ Import Directive #>", "<#@ import namespace=\"\"#>", "Import Directive", null, null),
-                new Completion("<#@ Include Directive #>", "<#@ include file=\"\"#>", "Include Directive", null, null)
+                new Completion2("<# #>", "<#   #>", "Control Block", null, null),
+                new Completion2("<#+ #>", "<#+   #>", "Class Feature Block", null, null),
+                new Completion2("<#= #>", "<#=   #>", "Expression Block", null, null),
+                new Completion2("<#@ import #>", "<#@ import namespace=\"\"#>", "Import Directive", null, null),
+                new Completion2("<#@ include #>", "<#@ include file=\"\"#>", "Include Directive", null, null)
             };
 
             completionSets.Add(new CompletionSet(
