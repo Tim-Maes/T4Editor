@@ -6,7 +6,7 @@ namespace T4Editor
 {
     internal static class T4ClassifierClassificationDefinition
     {
-#pragma warning disable 169
+#pragma warning disable CS0649
 
         [Export]
         [Name("T4")]
