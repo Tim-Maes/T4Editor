@@ -68,6 +68,7 @@
     <Compile Include="Classifier\T4ClassifierFormat.cs" />
     <Compile Include="Classifier\T4ClassifierProvider.cs" />
     <Compile Include="RegEx.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
