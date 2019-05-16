@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/Epsicode/T4Editor/_apis/build/status/Epsilekt.T4Editor?branchName=master)](https://dev.azure.com/Epsicode/T4Editor/_build/latest?definitionId=2&branchName=master)
+
 # T4Editor
 
 VS2019 extension to highlight <#code blocks#> in T4 Templates and has code completion.
