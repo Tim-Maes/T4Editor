@@ -1,9 +1,12 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Windows;
 using T4Editor.Controls;
+using VSLangProj;
+using Shell = Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
+using Window = System.Windows;
 
 namespace T4Editor.Commands
 {
@@ -13,9 +16,9 @@ namespace T4Editor.Commands
 
         public static readonly Guid CommandSet = new Guid("bfb75b6d-fe6d-4894-9cde-a1714bc797c2");
 
-        private readonly AsyncPackage package;
+        private readonly Shell.AsyncPackage package;
 
-        private OpenT4EditorSettingsCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private OpenT4EditorSettingsCommand(Shell.AsyncPackage package, Shell.OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -31,7 +34,7 @@ namespace T4Editor.Commands
             private set;
         }
 
-        private IAsyncServiceProvider ServiceProvider
+        private Shell.IAsyncServiceProvider ServiceProvider
         {
             get
             {
@@ -39,17 +42,17 @@ namespace T4Editor.Commands
             }
         }
 
-        public static async Task InitializeAsync(AsyncPackage package)
+        public static async Task InitializeAsync(Shell.AsyncPackage package)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
-            OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            Shell.OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as Shell.OleMenuCommandService;
             Instance = new OpenT4EditorSettingsCommand(package, commandService);
         }
 
         private void Execute(object sender, EventArgs e)
         {
-            var window = new Window
+            var window = new Window.Window
             {
                 Width = 350,
                 Height = 180,
@@ -57,7 +60,13 @@ namespace T4Editor.Commands
             };
 
             window.ShowDialog();
-            MessageBox.Show("Restart Visual Studio to apply changes.");
+
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            var dte = Shell.Package.GetGlobalService(typeof(SDTE)) as DTE;
+            string path = dte.ActiveDocument.FullName;
+            dte.ActiveDocument.Save();
+            dte.ActiveDocument.Close();
+            dte.ItemOperations.OpenFile(path);
         }
     }
 }

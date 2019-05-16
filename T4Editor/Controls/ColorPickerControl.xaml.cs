@@ -50,7 +50,6 @@ namespace T4Editor.Controls
         {
             var myWindow = Window.GetWindow(this);
             myWindow.Close();
-            MessageBox.Show("Restart Visual Studio for changes to apply.");
         }
     }
 }
