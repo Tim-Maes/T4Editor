@@ -16,12 +16,17 @@ namespace T4Editor
         [Export]
         [FileExtension(".tt")]
         [ContentType("T4")]
-        internal static FileExtensionToContentTypeDefinition t4FileExtensionDefinition;
+        internal static FileExtensionToContentTypeDefinition ttFileExtensionDefinition;
 
         [Export]
         [FileExtension(".ttinclude")]
         [ContentType("T4")]
         internal static FileExtensionToContentTypeDefinition ttincludeFileExtensionDefinition;
+
+        [Export]
+        [FileExtension(".t4")]
+        [ContentType("T4")]
+        internal static FileExtensionToContentTypeDefinition t4FileExtensionDefinition;
 
         [Export]
         [Name("T4")]

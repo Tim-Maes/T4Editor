@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="T4Editor.abda42ab-5257-4c25-b35a-39b39709332b" Version="1.4.6" Language="en-US" Publisher="Epsicode" />
+        <Identity Id="T4Editor.abda42ab-5257-4c25-b35a-39b39709332b" Version="1.4.7" Language="en-US" Publisher="Epsicode" />
         <DisplayName>T4Editor</DisplayName>
         <Description xml:space="preserve">Colored editor for .tt and .ttinclude files with code completion and brace matching. </Description>
         <MoreInfo>http://www.github.com/Epsilekt/T4Editor</MoreInfo>

@@ -7,7 +7,6 @@ namespace T4Editor
 {
     [Export(typeof(IClassifierProvider))]
     [ContentType("T4")]
-    [FileExtension(".tt")]
     internal class T4ClassifierProvider : IClassifierProvider
     {
 #pragma warning disable 649
