@@ -4,7 +4,7 @@
 
 VS2019 extension to highlight <#code blocks#> in T4 Templates and has code completion.
 
-![Example](https://i.ibb.co/tqhX5WL/T4Edutor.png)
+![Example](https://thumbs.gfycat.com/BlankAlertFrenchbulldog.webp)
 
 You can set a custom color for each block via `Extensions > T4Editor > Adjust Colors`
 
