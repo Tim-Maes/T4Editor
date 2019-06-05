@@ -9,11 +9,11 @@ namespace T4Editor.Outlining
     [Export(typeof(ITaggerProvider))]
     [TagType(typeof(IOutliningRegionTag))]
     [ContentType("T4")]
-    internal sealed class OutliningTaggerProvider : ITaggerProvider
+    internal sealed class BlockOutliningTaggerProvider : ITaggerProvider
     {
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
-            Func<ITagger<T>> sc = delegate () { return new OutliningTagger(buffer) as ITagger<T>; };
+            Func<ITagger<T>> sc = delegate () { return new BlockOutliningTagger(buffer) as ITagger<T>; };
             return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(sc);
         }
     }

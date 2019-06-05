@@ -55,6 +55,7 @@
     <Compile Include="Commands\OpenT4EditorSettingsCommandPackage.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingProvider.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingTagger.cs" />
+    <Compile Include="Completion\CompletionSets.cs" />
     <Compile Include="Controls\ColorPickerControl.xaml.cs">
       <DependentUpon>ColorPickerControl.xaml</DependentUpon>
     </Compile>
@@ -62,14 +63,15 @@
     <Compile Include="Completion\T4CompletionHandlerProvider.cs" />
     <Compile Include="Completion\T4CompletionSource.cs" />
     <Compile Include="Completion\T4CompletionSourceProvider.cs" />
-    <Compile Include="Outlining\OutliningTagger.cs" />
-    <Compile Include="Outlining\OutliningTaggerProvider.cs" />
+    <Compile Include="Outlining\BlockOutliningTagger.cs" />
+    <Compile Include="Outlining\BlockOutliningTaggerProvider.cs" />
+    <Compile Include="Outlining\Region.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classifier\T4Classifier.cs" />
     <Compile Include="Classifier\T4ClassifierClassificationDefinition.cs" />
     <Compile Include="Classifier\T4ClassifierFormat.cs" />
     <Compile Include="Classifier\T4ClassifierProvider.cs" />
-    <Compile Include="RegEx.cs" />
+    <Compile Include="Classifier\RegEx.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>

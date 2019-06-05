@@ -1,24 +1,18 @@
 ﻿using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace T4Editor.Outlining
 {
-    internal sealed class OutliningTagger : ITagger<IOutliningRegionTag>
+    internal sealed class BlockOutliningTagger : ITagger<IOutliningRegionTag>
     {
-        string startHide = "<#";
-        string endHide = "#>";  
-        string ellipsis = "...";
-        string hoverText = "hidden block"; 
-
         ITextBuffer buffer;
         ITextSnapshot snapshot;
         List<Region> regions;
 
-        public OutliningTagger(ITextBuffer buffer)
+        public BlockOutliningTagger(ITextBuffer buffer)
         {
             this.buffer = buffer;
             this.snapshot = buffer.CurrentSnapshot;
@@ -49,7 +43,7 @@ namespace T4Editor.Outlining
                     yield return new TagSpan<IOutliningRegionTag>(
                         new SnapshotSpan(startLine.Start + region.StartOffset,
                         endLine.End),
-                        new OutliningRegionTag(false, false, ellipsis, hoverText));
+                        new OutliningRegionTag(false, false, Block.ControlBlockEllipsis, Block.ControlBlockEllipsis));
                 }
             }
         }
@@ -73,7 +67,7 @@ namespace T4Editor.Outlining
                 int regionStart = -1;
                 string text = line.GetText();
 
-                if ((regionStart = text.IndexOf(startHide, StringComparison.Ordinal)) != -1)
+                if ((regionStart = text.IndexOf(Block.ControlBlockStartHide, StringComparison.Ordinal)) != -1)
                 {
                     int currentLevel = (currentRegion != null) ? currentRegion.Level : 1;
                     int newLevel;
@@ -109,7 +103,7 @@ namespace T4Editor.Outlining
                         };
                     }
                 }
-                else if ((regionStart = text.IndexOf(endHide, StringComparison.Ordinal)) != -1)
+                else if ((regionStart = text.IndexOf(Block.ControlBlockEndHide, StringComparison.Ordinal)) != -1)
                 {
                     int currentLevel = (currentRegion != null) ? currentRegion.Level : 1;
                     int closingLevel;
@@ -191,17 +185,5 @@ namespace T4Editor.Outlining
                  : snapshot.GetLineFromLineNumber(region.EndLine);
             return new SnapshotSpan(startLine.Start + region.StartOffset, endLine.End);
         }
-    }
-    class PartialRegion
-    {
-        public int StartLine { get; set; }
-        public int StartOffset { get; set; }
-        public int Level { get; set; }
-        public PartialRegion PartialParent { get; set; }
-    }
-
-    class Region : PartialRegion
-    {
-        public int EndLine { get; set; }
     }
 }
