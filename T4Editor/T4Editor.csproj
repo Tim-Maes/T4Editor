@@ -51,6 +51,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classifier\TextViewColorizer.cs" />
+    <Compile Include="Classifier\TextViewColorizerManager.cs" />
+    <Compile Include="Classifier\TextViewCreationListener.cs" />
     <Compile Include="Commands\OpenT4EditorSettingsCommand.cs" />
     <Compile Include="Commands\OpenT4EditorSettingsCommandPackage.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingProvider.cs" />
@@ -63,6 +66,7 @@
     <Compile Include="Completion\T4CompletionHandlerProvider.cs" />
     <Compile Include="Completion\T4CompletionSource.cs" />
     <Compile Include="Completion\T4CompletionSourceProvider.cs" />
+    <Compile Include="Controls\OptionsViewModel.cs" />
     <Compile Include="Outlining\BlockOutliningTagger.cs" />
     <Compile Include="Outlining\BlockOutliningTaggerProvider.cs" />
     <Compile Include="Outlining\Region.cs" />
