@@ -60,13 +60,6 @@ namespace T4Editor.Commands
             };
 
             window.ShowDialog();
-
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            var dte = Shell.Package.GetGlobalService(typeof(SDTE)) as DTE;
-            string path = dte.ActiveDocument.FullName;
-            dte.ActiveDocument.Save();
-            dte.ActiveDocument.Close();
-            dte.ItemOperations.OpenFile(path);
         }
     }
 }
