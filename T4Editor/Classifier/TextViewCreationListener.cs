@@ -5,7 +5,7 @@ using System.ComponentModel.Composition;
 namespace T4Editor.Classifier
 {
     [Export(typeof(IWpfTextViewCreationListener))]
-    [ContentType("T4")]
+    [ContentType(Common.Constants.BaseContentType)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
     internal class TextViewCreationListener : IWpfTextViewCreationListener
     {

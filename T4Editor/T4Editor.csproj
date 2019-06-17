@@ -58,6 +58,7 @@
     <Compile Include="Commands\OpenT4EditorSettingsCommandPackage.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingProvider.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingTagger.cs" />
+    <Compile Include="Common\Constants.cs" />
     <Compile Include="Completion\CompletionSets.cs" />
     <Compile Include="Controls\ColorPickerControl.xaml.cs">
       <DependentUpon>ColorPickerControl.xaml</DependentUpon>
@@ -75,7 +76,6 @@
     <Compile Include="Classifier\T4ClassifierClassificationDefinition.cs" />
     <Compile Include="Classifier\T4ClassifierFormat.cs" />
     <Compile Include="Classifier\T4ClassifierProvider.cs" />
-    <Compile Include="Classifier\RegEx.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>

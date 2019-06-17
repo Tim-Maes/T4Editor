@@ -2,11 +2,12 @@
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
+using T4Editor.Common;
 
 namespace T4Editor
 {
     [Export(typeof(IClassifierProvider))]
-    [ContentType("T4")]
+    [ContentType(Constants.BaseContentType)]
     internal class T4ClassifierProvider : IClassifierProvider
     {
 #pragma warning disable 649

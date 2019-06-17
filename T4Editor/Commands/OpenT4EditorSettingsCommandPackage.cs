@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
+using T4Editor.Common;
 using Task = System.Threading.Tasks.Task;
 
 namespace T4Editor.Commands
@@ -14,7 +15,7 @@ namespace T4Editor.Commands
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class OpenT4EditorSettingsCommandPackage : AsyncPackage
     {
-        public const string PackageGuidString = "c556d31f-824b-450e-879a-39e102ca1ae4";
+        public const string PackageGuidString = Constants.PackageGuid;
 
         public OpenT4EditorSettingsCommandPackage()
         {
