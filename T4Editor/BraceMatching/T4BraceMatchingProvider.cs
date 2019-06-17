@@ -3,11 +3,12 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
+using T4Editor.Common;
 
 namespace T4Editor.Completion
 {
     [Export(typeof(IViewTaggerProvider))]
-    [ContentType("T4")]
+    [ContentType(Constants.BaseContentType)]
     [TagType(typeof(TextMarkerTag))]
     internal class T4BraceMatchingProvider : IViewTaggerProvider
     {

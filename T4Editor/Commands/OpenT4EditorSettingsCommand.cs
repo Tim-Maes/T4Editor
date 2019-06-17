@@ -1,9 +1,6 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell.Interop;
-using System;
+﻿using System;
 using System.ComponentModel.Design;
 using T4Editor.Controls;
-using VSLangProj;
 using Shell = Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 using Window = System.Windows;
@@ -14,7 +11,7 @@ namespace T4Editor.Commands
     {
         public const int CommandId = 0x0100;
 
-        public static readonly Guid CommandSet = new Guid("bfb75b6d-fe6d-4894-9cde-a1714bc797c2");
+        public static readonly Guid CommandSet = new Guid(Common.Constants.CommandSetGuid);
 
         private readonly Shell.AsyncPackage package;
 

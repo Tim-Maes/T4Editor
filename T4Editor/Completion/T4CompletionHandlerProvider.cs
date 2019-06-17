@@ -6,12 +6,13 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
 using System;
 using System.ComponentModel.Composition;
+using T4Editor.Common;
 
 namespace T4Editor.Intellisense
 {
     [Export(typeof(IVsTextViewCreationListener))]
     [Name("T4 completion handler")]
-    [ContentType("T4")]
+    [ContentType(Constants.BaseContentType)]
     [TextViewRole(PredefinedTextViewRoles.Editable)]
     internal class T4CompletionHandlerProvider : IVsTextViewCreationListener
     {

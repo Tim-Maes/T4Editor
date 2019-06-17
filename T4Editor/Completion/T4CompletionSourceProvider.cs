@@ -3,11 +3,12 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
+using T4Editor.Common;
 
 namespace T4Editor.Intellisense
 {
     [Export(typeof(ICompletionSourceProvider))]
-    [ContentType("T4")]
+    [ContentType(Constants.BaseContentType)]
     [Name("T4 completion")]
     internal class T4CompletionSourceProvider : ICompletionSourceProvider
     {

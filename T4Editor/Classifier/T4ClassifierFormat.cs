@@ -2,12 +2,13 @@
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
+using T4Editor.Common;
 
 namespace T4Editor
 {
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "T4.ClassFeatureBlock")]
-    [Name("T4.ClassFeatureBlock")]
+    [ClassificationType(ClassificationTypeNames = Constants.ClassFeatureBlock)]
+    [Name(Constants.ClassFeatureBlock)]
     internal sealed class T4ClassFeature : ClassificationFormatDefinition
     {
         public T4ClassFeature()
@@ -18,8 +19,8 @@ namespace T4Editor
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "T4.StatementBlock")]
-    [Name("T4.StatementBlock")]
+    [ClassificationType(ClassificationTypeNames = Constants.StatementBlock)]
+    [Name(Constants.StatementBlock)]
     internal sealed class T4Statement : ClassificationFormatDefinition
     {
         public T4Statement()
@@ -30,8 +31,8 @@ namespace T4Editor
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "T4.Directive")]
-    [Name("T4.Directive")]
+    [ClassificationType(ClassificationTypeNames = Constants.DirectiveBlock)]
+    [Name(Constants.DirectiveBlock)]
     internal sealed class T4Directive : ClassificationFormatDefinition
     {
         public T4Directive()
@@ -42,8 +43,8 @@ namespace T4Editor
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "T4.Output")]
-    [Name("T4.Output")]
+    [ClassificationType(ClassificationTypeNames = Constants.OutputBlock)]
+    [Name(Constants.OutputBlock)]
     internal sealed class OutputDirective : ClassificationFormatDefinition
     {
         public OutputDirective()
@@ -54,8 +55,8 @@ namespace T4Editor
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "T4.Injected")]
-    [Name("T4.Injected")]
+    [ClassificationType(ClassificationTypeNames = Constants.ExpressionBlock)]
+    [Name(Constants.ExpressionBlock)]
     internal sealed class InjectedDirective : ClassificationFormatDefinition
     {
         public InjectedDirective()

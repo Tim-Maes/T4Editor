@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
+using T4Editor.Common;
 
 namespace T4Editor
 {
@@ -9,53 +10,53 @@ namespace T4Editor
 #pragma warning disable CS0649
 
         [Export]
-        [Name("T4")]
+        [Name(Constants.BaseContentType)]
         [BaseDefinition("code")]
         internal static ContentTypeDefinition ContentDefinition;
 
         [Export]
-        [FileExtension(".tt")]
-        [ContentType("T4")]
+        [FileExtension(Constants.TTFileExtension)]
+        [ContentType(Constants.BaseContentType)]
         internal static FileExtensionToContentTypeDefinition ttFileExtensionDefinition;
 
         [Export]
-        [FileExtension(".ttinclude")]
-        [ContentType("T4")]
+        [FileExtension(Constants.TTIncludeFileExtension)]
+        [ContentType(Constants.BaseContentType)]
         internal static FileExtensionToContentTypeDefinition ttincludeFileExtensionDefinition;
 
         [Export]
-        [FileExtension(".t4")]
-        [ContentType("T4")]
+        [FileExtension(Constants.T4FileExtension)]
+        [ContentType(Constants.BaseContentType)]
         internal static FileExtensionToContentTypeDefinition t4FileExtensionDefinition;
 
         [Export]
-        [Name("T4")]
+        [Name(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition T4ClassificationDefinition;
 
         [Export]
-        [Name("T4.ClassFeatureBlock")]
-        [BaseDefinition("T4")]
+        [Name(Constants.ClassFeatureBlock)]
+        [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition classFeatureBlockDefinition;
 
         [Export]
-        [Name("T4.StatementBlock")]
-        [BaseDefinition("T4")]
+        [Name(Constants.StatementBlock)]
+        [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition statementBlockDefinition;
 
         [Export]
-        [Name("T4.Directive")]
-        [BaseDefinition("T4")]
+        [Name(Constants.DirectiveBlock)]
+        [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition directiveDefinition;
 
         [Export]
-        [Name("T4.Output")]
-        [BaseDefinition("T4")]
+        [Name(Constants.OutputBlock)]
+        [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition outputDefinition;
 
         [Export]
-        [Name("T4.Injected")]
-        [BaseDefinition("T4")]
-        internal static ClassificationTypeDefinition injectDefinition;
+        [Name(Constants.ExpressionBlock)]
+        [BaseDefinition(Constants.BaseContentType)]
+        internal static ClassificationTypeDefinition expressionDefinition;
 
 #pragma warning restore 169
     }

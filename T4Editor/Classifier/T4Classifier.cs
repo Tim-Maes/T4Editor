@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using T4Editor.Common;
 
 namespace T4Editor
 {
@@ -44,12 +45,11 @@ namespace T4Editor
 
             var document = snapshot.GetText();
 
-            var regEx = new RegEx();
-            MatchCollection directiveMatches = Regex.Matches(document, regEx.directiveRegex);
-            MatchCollection classFeatureBlockMatches = Regex.Matches(document, regEx.classFeatureBlockRegex);
-            MatchCollection statementBlockMatches = Regex.Matches(document, regEx.statementBlockRegex);
-            MatchCollection injectedMatches = Regex.Matches(document, regEx.injectedRegex);
-            MatchCollection outputMatches = Regex.Matches(document, regEx.outputRegex);
+            MatchCollection directiveMatches = Regex.Matches(document, Constants.DirectiveRegex);
+            MatchCollection classFeatureBlockMatches = Regex.Matches(document, Constants.ClassFeatureBlockRegex);
+            MatchCollection statementBlockMatches = Regex.Matches(document, Constants.StatementBlockRegex);
+            MatchCollection injectedMatches = Regex.Matches(document, Constants.ExpressionBlockRegex);
+            MatchCollection outputMatches = Regex.Matches(document, Constants.OutputBlockRegex);
 
             IClassificationType type = null;
 
@@ -57,7 +57,7 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
-                    type = _classificationTypeRegistry.GetClassificationType("T4.Directive");
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.DirectiveBlock);
                     spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
@@ -66,7 +66,7 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
-                    type = _classificationTypeRegistry.GetClassificationType("T4.ClassFeatureBlock");
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.ClassFeatureBlock);
                     spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
@@ -75,7 +75,7 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
-                    type = _classificationTypeRegistry.GetClassificationType("T4.StatementBlock");
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.StatementBlock);
                     spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
@@ -84,7 +84,7 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
-                    type = _classificationTypeRegistry.GetClassificationType("T4.Injected");
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.ExpressionBlock);
                     spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
@@ -93,7 +93,7 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
-                    type = _classificationTypeRegistry.GetClassificationType("T4.Output");
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.OutputBlock);
                     spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
                 }
             }
