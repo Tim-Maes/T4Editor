@@ -2,10 +2,19 @@
 
 # T4Editor
 
-VS2019 extension to highlight <#code blocks#> in T4 Templates and has code completion.
+VS2019 extension that increases productivity when working with T4 templates, especially in combination with [T4Executer](https://marketplace.visualstudio.com/items?itemName=TimMaes.ttexecuter).
+
+## Features
+
+- Set custom colors for different code blocks.
+- Code completion for code blocks.
+- Brace matching
+- Outlining
+
+## Configuration
+
+- Set colors via `Extensions > T4Editor > Adjust Colors`
 
 ![Example](https://thumbs.gfycat.com/BlankAlertFrenchbulldog.webp)
-
-You can set a custom color for each block via `Extensions > T4Editor > Adjust Colors`
 
 Get it from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=TimMaes.t4editor).
