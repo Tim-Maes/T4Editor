@@ -1,4 +1,6 @@
-[![Build Status](https://dev.azure.com/Epsicode/T4Editor/_apis/build/status/Epsilekt.T4Editor?branchName=master)](https://dev.azure.com/Epsicode/T4Editor/_build/latest?definitionId=2&branchName=master)
+|Build Status|
+|:------:|
+|[![Build Status](https://dev.azure.com/Epsicode/T4Editor/_apis/build/status/Epsilekt.T4Editor?branchName=master)](https://dev.azure.com/Epsicode/T4Editor/_build/latest?definitionId=2&branchName=master)| 
 
 # T4Editor
 
