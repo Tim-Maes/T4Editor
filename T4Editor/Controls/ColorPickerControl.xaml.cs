@@ -9,11 +9,7 @@ namespace T4Editor.Controls
         public ColorPickerControl()
         {
             InitializeComponent();
-            StatemenBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor);
-            FeatureBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor);
-            DirectiveColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor);
-            OutputColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor);
-            InjectedColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor);
+            SetColorPickers();
         }
 
         private void StatemenBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
@@ -50,6 +46,15 @@ namespace T4Editor.Controls
         {
             var myWindow = Window.GetWindow(this);
             myWindow.Close();
+        }
+
+        private void SetColorPickers()
+        {
+            StatemenBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor);
+            FeatureBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor);
+            DirectiveColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor);
+            OutputColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor);
+            InjectedColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor);
         }
     }
 }
