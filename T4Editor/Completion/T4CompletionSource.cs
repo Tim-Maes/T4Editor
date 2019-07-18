@@ -11,7 +11,6 @@ namespace T4Editor.Intellisense
     {
         private T4CompletionSourceProvider _sourceProvider;
         private ITextBuffer _textBuffer;
-        private List<Completion2> _completionList;
         private CompletionSets _completionSets;
 
         public T4CompletionSource(T4CompletionSourceProvider sourceProvider, ITextBuffer textBuffer)

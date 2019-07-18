@@ -20,7 +20,9 @@ namespace T4Editor.Completion
             _braceList.Add('{', '}');
             _braceList.Add('[', ']');
             _braceList.Add('(', ')');
+            _braceList.Add('<', '>');
             _braceList.Add('"', '"');
+            _braceList.Add('\'', '\'');
             this.View = view;
             this.SourceBuffer = sourceBuffer;
             this.CurrentChar = null;
@@ -50,9 +52,7 @@ namespace T4Editor.Completion
             if (!CurrentChar.HasValue)
                 return;
 
-            var tempEvent = TagsChanged;
-            if (tempEvent != null)
-                tempEvent(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0,
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0,
                     SourceBuffer.CurrentSnapshot.Length)));
         }
 

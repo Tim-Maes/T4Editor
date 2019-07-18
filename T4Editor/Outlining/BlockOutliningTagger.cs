@@ -70,8 +70,8 @@ namespace T4Editor.Outlining
                 if ((regionStart = text.IndexOf(Block.ControlBlockStartHide, StringComparison.Ordinal)) != -1)
                 {
                     int currentLevel = (currentRegion != null) ? currentRegion.Level : 1;
-                    int newLevel;
-                    if (!TryGetLevel(text, regionStart, out newLevel))
+
+                    if (!TryGetLevel(text, regionStart, out int newLevel))
                         newLevel = currentLevel + 1;
 
                     if (currentLevel == newLevel && currentRegion != null)
@@ -106,8 +106,8 @@ namespace T4Editor.Outlining
                 else if ((regionStart = text.IndexOf(Block.ControlBlockEndHide, StringComparison.Ordinal)) != -1)
                 {
                     int currentLevel = (currentRegion != null) ? currentRegion.Level : 1;
-                    int closingLevel;
-                    if (!TryGetLevel(text, regionStart, out closingLevel))
+
+                    if (!TryGetLevel(text, regionStart, out int closingLevel))
                         closingLevel = currentLevel;
 
                     if (currentRegion != null &&
@@ -160,9 +160,8 @@ namespace T4Editor.Outlining
             if (changeStart <= changeEnd)
             {
                 ITextSnapshot snap = this.snapshot;
-                if (this.TagsChanged != null)
-                    this.TagsChanged(this, new SnapshotSpanEventArgs(
-                        new SnapshotSpan(this.snapshot, Span.FromBounds(changeStart, changeEnd))));
+
+                this.TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(new SnapshotSpan(this.snapshot, Span.FromBounds(changeStart, changeEnd))));
             }
         }
 
