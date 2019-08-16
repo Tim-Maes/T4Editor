@@ -1,16 +1,27 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using T4Editor.Common;
+using T4Editor.Classifier;
 
 namespace T4Editor.Controls
 {
     public partial class ColorPickerControl : UserControl
     {
+#pragma warning disable 649
+        [Import]
+        private TextViewColorizersManager _textViewsManager;
+
         public ColorPickerControl()
         {
             InitializeComponent();
             SetColorPickers();
+            this.SatisfyImportsOnce();
         }
+#pragma warning restore 649
 
         private void StatemenBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
@@ -44,8 +55,36 @@ namespace T4Editor.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            BatchUpdateColors();
             var myWindow = Window.GetWindow(this);
             myWindow.Close();
+        }
+
+        public void BatchUpdateColors()
+        {
+            List<CategoryItemDecorationSettings> settings = new List<CategoryItemDecorationSettings>();
+
+            var colors = new Color[] { 
+             (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor),
+             };
+
+            for (var i = 0; i < colors.Count(); i++)
+            {
+                settings.Add(new CategoryItemDecorationSettings
+                {
+                    ForegroundColor = colors[i],
+                    DisplayName = Constants.Types[i]
+                });
+            }
+
+            foreach (TextViewColorizer colorizer in _textViewsManager.GetColorizers())
+            {
+                colorizer.UpdateColors(settings);
+            }
         }
 
         private void SetColorPickers()

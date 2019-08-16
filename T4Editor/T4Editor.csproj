@@ -51,11 +51,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classifier\CategoryItemDecorationSettings.cs" />
+    <Compile Include="Classifier\Helpers\NotifiesPropertyChanged.cs" />
+    <Compile Include="Classifier\TextViewColorizersManager.cs" />
+    <Compile Include="Classifier\TextViewColorizer.cs" />
+    <Compile Include="Classifier\TextViewCreationListener.cs" />
     <Compile Include="Commands\OpenT4EditorSettingsCommand.cs" />
     <Compile Include="Commands\OpenT4EditorSettingsCommandPackage.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingProvider.cs" />
     <Compile Include="BraceMatching\T4BraceMatchingTagger.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\Instances.cs" />
     <Compile Include="Completion\CompletionSets.cs" />
     <Compile Include="Controls\ColorPickerControl.xaml.cs">
       <DependentUpon>ColorPickerControl.xaml</DependentUpon>
@@ -64,6 +70,9 @@
     <Compile Include="Completion\T4CompletionHandlerProvider.cs" />
     <Compile Include="Completion\T4CompletionSource.cs" />
     <Compile Include="Completion\T4CompletionSourceProvider.cs" />
+    <Compile Include="Extensions\MefExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\ServiceProviderExtensions.cs" />
     <Compile Include="Outlining\BlockOutliningTagger.cs" />
     <Compile Include="Outlining\BlockOutliningTaggerProvider.cs" />
     <Compile Include="Outlining\Region.cs" />
@@ -94,7 +103,6 @@
       <Version>3.5.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="15.9.3" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.0.2264" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
