@@ -27,30 +27,35 @@ namespace T4Editor.Controls
         {
             Settings.Default.StatementBlockColor = StatemenBlockColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
+            BatchUpdateColors();
         }
 
         private void FeatureBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             Settings.Default.FeatureBlockColor = FeatureBlockColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
+            BatchUpdateColors();
         }
 
         private void DirectiveColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             Settings.Default.DirectiveColor = DirectiveColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
+            BatchUpdateColors();
         }
 
         private void OutputColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             Settings.Default.OutputColor = OutputColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
+            BatchUpdateColors();
         }
 
         private void InjectedColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             Settings.Default.InjectedColor = InjectedColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
+            BatchUpdateColors();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -62,6 +67,8 @@ namespace T4Editor.Controls
 
         public void BatchUpdateColors()
         {
+            if(_textViewsManager == null) this.SatisfyImportsOnce();
+
             List<CategoryItemDecorationSettings> settings = new List<CategoryItemDecorationSettings>();
 
             var colors = new Color[] { 
