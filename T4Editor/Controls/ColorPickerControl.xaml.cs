@@ -69,15 +69,9 @@ namespace T4Editor.Controls
         {
             if(_textViewsManager == null) this.SatisfyImportsOnce();
 
-            List<CategoryItemDecorationSettings> settings = new List<CategoryItemDecorationSettings>();
+            var colors = GetColorsFromSettings();
 
-            var colors = new Color[] { 
-             (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor),
-                (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor),
-                (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor),
-                (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor),
-                (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor),
-             };
+            List<CategoryItemDecorationSettings> settings = new List<CategoryItemDecorationSettings>();
 
             for (var i = 0; i < colors.Count(); i++)
             {
@@ -92,6 +86,17 @@ namespace T4Editor.Controls
             {
                 colorizer.UpdateColors(settings);
             }
+        }
+
+        private Color[] GetColorsFromSettings()
+        {
+            return new Color[] {
+             (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor),
+             };
         }
 
         private void SetColorPickers()

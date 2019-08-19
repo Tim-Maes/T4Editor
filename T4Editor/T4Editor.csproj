@@ -52,7 +52,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Classifier\CategoryItemDecorationSettings.cs" />
-    <Compile Include="Classifier\Helpers\NotifiesPropertyChanged.cs" />
     <Compile Include="Classifier\TextViewColorizersManager.cs" />
     <Compile Include="Classifier\TextViewColorizer.cs" />
     <Compile Include="Classifier\TextViewCreationListener.cs" />
