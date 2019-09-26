@@ -22,12 +22,22 @@
         #endregion
 
         #region ClassificationTypes
+
         internal static readonly string[] Types = { "T4.StatementBlock", "T4.ClassFeatureBlock", "T4.Directive", "T4.Output", "T4.Expression" };
         internal const string StatementBlock = "T4.StatementBlock";
         internal const string ClassFeatureBlock = "T4.ClassFeatureBlock";
         internal const string DirectiveBlock = "T4.Directive";
         internal const string OutputBlock = "T4.Output";
         internal const string ExpressionBlock = "T4.Expression";
+
+        #endregion
+
+        #region OutliningRegion
+
+        internal const string BlockStartHide = "<#";
+        internal const string BlockEndHide = "#>";
+        internal const string BlockEllipsis = "<#..#>";
+        internal const string BlockHoverText = "hidden block";
 
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+using T4Editor.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace T4Editor.Outlining
                     yield return new TagSpan<IOutliningRegionTag>(
                         new SnapshotSpan(startLine.Start + region.StartOffset,
                         endLine.End),
-                        new OutliningRegionTag(false, false, Block.ControlBlockEllipsis, Block.ControlBlockEllipsis));
+                        new OutliningRegionTag(false, false, Constants.BlockEllipsis, Constants.BlockEllipsis));
                 }
             }
         }
@@ -67,7 +68,7 @@ namespace T4Editor.Outlining
                 int regionStart = -1;
                 string text = line.GetText();
 
-                if ((regionStart = text.IndexOf(Block.ControlBlockStartHide, StringComparison.Ordinal)) != -1)
+                if ((regionStart = text.IndexOf(Constants.BlockStartHide, StringComparison.Ordinal)) != -1)
                 {
                     int currentLevel = (currentRegion != null) ? currentRegion.Level : 1;
 
@@ -103,7 +104,7 @@ namespace T4Editor.Outlining
                         };
                     }
                 }
-                else if ((regionStart = text.IndexOf(Block.ControlBlockEndHide, StringComparison.Ordinal)) != -1)
+                else if ((regionStart = text.IndexOf(Constants.BlockEndHide, StringComparison.Ordinal)) != -1)
                 {
                     int currentLevel = (currentRegion != null) ? currentRegion.Level : 1;
 

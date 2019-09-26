@@ -12,12 +12,4 @@
     {
         public int EndLine { get; set; }
     }
-
-    class Block
-    {
-        public const string ControlBlockStartHide = "<#";
-        public const string ControlBlockEndHide = "#>";
-        public const string ControlBlockEllipsis = "<#..#>";
-        public const string ControlBlockHoverText = "hidden block";
-    }
 }
