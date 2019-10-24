@@ -11,7 +11,6 @@ namespace T4Editor.Classifier
 {
     internal class TextViewColorizer
     {
-        // Disable "Field is never assigned to..." compiler's warning. Justification: the field is assigned by MEF.
 #pragma warning disable 649
 
         [Import]
@@ -54,9 +53,9 @@ namespace T4Editor.Classifier
                     _classificationFormatMap.SetExplicitTextProperties(classificationType, textProperties);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //TO-DO: Log exception
+                System.Diagnostics.Debug.Write(ex);
             }
             finally
             {
