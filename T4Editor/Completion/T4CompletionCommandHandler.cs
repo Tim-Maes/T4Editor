@@ -48,9 +48,7 @@ namespace T4Editor.Intellisense
                 typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
             }
 
-            if (nCmdID == (uint)VSConstants.VSStd2KCmdID.RETURN
-                || nCmdID == (uint)VSConstants.VSStd2KCmdID.TAB
-                || (char.IsWhiteSpace(typedChar) || char.IsPunctuation(typedChar)))
+            if (nCmdID == (uint)VSConstants.VSStd2KCmdID.TAB)
             {
                 if (session != null && !session.IsDismissed)
                 {
