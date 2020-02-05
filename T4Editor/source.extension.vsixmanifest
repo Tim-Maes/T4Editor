@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="T4Editor.abda42ab-5257-4c25-b35a-39b39709332b" Version="1.7.3" Language="en-US" Publisher="Tim Maes" />
+        <Identity Id="T4Editor.abda42ab-5257-4c25-b35a-39b39709332b" Version="1.7.5" Language="en-US" Publisher="Tim Maes" />
         <DisplayName>T4Editor</DisplayName>
         <Description xml:space="preserve">Configurable colored editor for *.tt, *.t4 and *.ttinclude files with code completion, outlining and brace matching. </Description>
         <MoreInfo>http://www.github.com/Tim-Maes/T4Editor</MoreInfo>
         <License>LICENSE.txt</License>
-        <ReleaseNotes>1.7 - No more restart required when changing colors.</ReleaseNotes>
+        <ReleaseNotes>1.7 .5 Autocomplete triggers only on TAB</ReleaseNotes>
         <Icon>T4Editor.jpg</Icon>
         <PreviewImage>T4Editor.jpg</PreviewImage>
+        <Preview>true</Preview>
 
     </Metadata>
     <Installation>
