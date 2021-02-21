@@ -31,14 +31,6 @@ namespace T4Editor.Commands
             private set;
         }
 
-        private Shell.IAsyncServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
-
         public static async Task InitializeAsync(Shell.AsyncPackage package)
         {
             await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);

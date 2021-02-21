@@ -20,8 +20,8 @@ namespace T4Editor.Intellisense
 
         internal T4CompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView, T4CompletionHandlerProvider provider)
         {
-            this._textView = textView;
-            this._provider = provider;
+            _textView = textView;
+            _provider = provider;
 
             textViewAdapter.AddCommandFilter(this, out _nextCommandHandler);
         }
@@ -44,9 +44,7 @@ namespace T4Editor.Intellisense
             char typedChar = char.MinValue;
 
             if (pguidCmdGroup == VSConstants.VSStd2K && nCmdID == (uint)VSConstants.VSStd2KCmdID.TYPECHAR)
-            {
                 typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
-            }
 
             if (nCmdID == (uint)VSConstants.VSStd2KCmdID.TAB)
             {
@@ -73,7 +71,7 @@ namespace T4Editor.Intellisense
             {
                 if (session == null || session.IsDismissed)
                 {
-                    this.TriggerCompletion();
+                    TriggerCompletion();
                     session.Filter();
                 }
                 else
@@ -102,12 +100,10 @@ namespace T4Editor.Intellisense
             textBuffer => (!textBuffer.ContentType.IsOfType("projection")), PositionAffinity.Predecessor);
 
             if (!caretPoint.HasValue)
-            {
                 return false;
-            }
 
             session = _provider.CompletionBroker.CreateCompletionSession
-         (_textView,
+                (_textView,
                 caretPoint.Value.Snapshot.CreateTrackingPoint(caretPoint.Value.Position, PointTrackingMode.Positive),
                 true);
 

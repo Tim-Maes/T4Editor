@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace T4Editor.Completion
 {
-    class CompletionSets
+    internal class CompletionSets
     {
         public List<Completion2> GetCompletionSets()
         {

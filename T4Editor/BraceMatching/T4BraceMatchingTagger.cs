@@ -23,12 +23,12 @@ namespace T4Editor.Completion
             _braceList.Add('<', '>');
             _braceList.Add('"', '"');
             _braceList.Add('\'', '\'');
-            this.View = view;
-            this.SourceBuffer = sourceBuffer;
-            this.CurrentChar = null;
+            View = view;
+            SourceBuffer = sourceBuffer;
+            CurrentChar = null;
 
-            this.View.Caret.PositionChanged += CaretPositionChanged;
-            this.View.LayoutChanged += ViewLayoutChanged;
+            View.Caret.PositionChanged += CaretPositionChanged;
+            View.LayoutChanged += ViewLayoutChanged;
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -80,7 +80,7 @@ namespace T4Editor.Completion
             {
                 char closeChar;
                 _braceList.TryGetValue(currentText, out closeChar);
-                if (T4BraceMatchingTagger.FindMatchingCloseChar(currentChar, currentText, closeChar, View.TextViewLines.Count, out pairSpan) == true)
+                if (FindMatchingCloseChar(currentChar, currentText, closeChar, View.TextViewLines.Count, out pairSpan) == true)
                 {
                     yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(currentChar, 1), new TextMarkerTag("blue"));
                     yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("blue"));
@@ -91,7 +91,7 @@ namespace T4Editor.Completion
                 var open = from n in _braceList
                            where n.Value.Equals(lastText)
                            select n.Key;
-                if (T4BraceMatchingTagger.FindMatchingOpenChar(lastChar, (char)open.ElementAt<char>(0), lastText, View.TextViewLines.Count, out pairSpan) == true)
+                if (FindMatchingOpenChar(lastChar, (char)open.ElementAt<char>(0), lastText, View.TextViewLines.Count, out pairSpan) == true)
                 {
                     yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(lastChar, 1), new TextMarkerTag("blue"));
                     yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("blue"));
