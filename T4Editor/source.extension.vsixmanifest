@@ -1,28 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="T4Editor.abda42ab-5257-4c25-b35a-39b39709332b" Version="1.7.6" Language="en-US" Publisher="Tim Maes" />
+        <Identity Id="T4Editor.abda42ab-5257-4c25-b35a-39b39709332b" Version="2.0.2" Language="en-US" Publisher="Tim Maes" />
         <DisplayName>T4Editor</DisplayName>
         <Description xml:space="preserve">Configurable colored editor for *.tt, *.t4 and *.ttinclude files with code completion, outlining and brace matching. </Description>
         <MoreInfo>http://www.github.com/Tim-Maes/T4Editor</MoreInfo>
         <License>LICENSE.txt</License>
-        <ReleaseNotes>1.7 .5 Autocomplete triggers only on TAB</ReleaseNotes>
+        <ReleaseNotes>2.0 Added Visual Studio 2022 support</ReleaseNotes>
         <Icon>T4Editor.jpg</Icon>
         <PreviewImage>T4Editor.jpg</PreviewImage>
-        <Preview>true</Preview>
-
+        <Preview>false</Preview>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[16.0, 17.0)" />
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
         <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[16.0, 17.0)" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[17.0,18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0,18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
+
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-        <Dependency Id="Microsoft.VisualStudio.MPF.16.0" DisplayName="Visual Studio MPF 16.0" d:Source="Installed" Version="[16.0,17.0)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.16.0" DisplayName="Visual Studio MPF 16.0" d:Source="Installed" Version="[16.0,18.0)" />
     </Dependencies>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,18.0)" DisplayName="Visual Studio core editor" />
     </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
