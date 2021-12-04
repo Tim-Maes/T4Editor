@@ -4,7 +4,7 @@
 
 # T4Editor
 
-VS2019 extension that increases productivity when working with T4 templates, especially in combination with [T4Executer](https://marketplace.visualstudio.com/items?itemName=TimMaes.ttexecuter).
+Extension for Visual Studio that increases productivity when working with T4 templates, especially in combination with [T4Executer](https://marketplace.visualstudio.com/items?itemName=TimMaes.ttexecuter). Works on 2017, 2019 and 2022 versions.
 
 ## Features
 
