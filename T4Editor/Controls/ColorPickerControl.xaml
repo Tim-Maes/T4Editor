@@ -9,16 +9,16 @@
     <Grid>
         <StackPanel Height="180">
             <TabControl>
-                <TabItem Header="Statement Blocks">
+                <TabItem Header="Control Blocks">
                     <StackPanel>
-                        <Label Content="Pick a color for the statement blocks" />
-                        <xctk:ColorPicker SelectedColorChanged="StatemenBlockColorPicker_SelectedColorChanged" Name="StatemenBlockColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                        <Label Content="Pick a color for the control blocks" />
+                        <xctk:ColorPicker SelectedColorChanged="ControlBlockColorPicker_SelectedColorChanged" Name="ControlBlockColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Class Feature Blocks" >
                     <StackPanel>
                        <Label Content="Pick a color for the class feature blocks" ></Label>
-                        <xctk:ColorPicker SelectedColorChanged="FeatureBlockColorPicker_SelectedColorChanged" Name="FeatureBlockColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/> 
+                        <xctk:ColorPicker SelectedColorChanged="ClassFeatureBlockColorPicker_SelectedColorChanged" Name="ClassFeatureBlockColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/> 
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Directives" >
@@ -37,6 +37,20 @@
                     <StackPanel>
                         <Label Content="Pick a color for the expression blocks" ></Label>
                         <xctk:ColorPicker SelectedColorChanged="InjectedColorPicker_SelectedColorChanged" Name="InjectedColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="Tag" >
+                    <StackPanel>
+                        <Label Content="Pick a color for the tags" ></Label>
+                        <xctk:ColorPicker SelectedColorChanged="TagColorPicker_SelectedColorChanged" Name="TagColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
+                    </StackPanel>
+                </TabItem>
+                
+                <TabItem Header="Tag background" >
+                    <StackPanel>
+                        <Label Content="Pick a color for the tag background" ></Label>
+                        <xctk:ColorPicker SelectedColorChanged="TagBackgroundColorPicker_SelectedColorChanged" Name="TagBackgroundColorPicker" DisplayColorAndName="True" UsingAlphaChannel="False"/>
                     </StackPanel>
                 </TabItem>
             </TabControl>

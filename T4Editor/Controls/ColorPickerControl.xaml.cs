@@ -23,16 +23,16 @@ namespace T4Editor.Controls
         }
 #pragma warning restore 649
 
-        private void StatemenBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        private void ClassFeatureBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            Settings.Default.StatementBlockColor = StatemenBlockColorPicker.SelectedColor.ToString();
+            Settings.Default.ClassFeatureBlockColor = ClassFeatureBlockColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
             BatchUpdateColors();
         }
 
-        private void FeatureBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        private void ControlBlockColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            Settings.Default.FeatureBlockColor = FeatureBlockColorPicker.SelectedColor.ToString();
+            Settings.Default.ControlBlockColor = ControlBlockColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
             BatchUpdateColors();
         }
@@ -54,6 +54,20 @@ namespace T4Editor.Controls
         private void InjectedColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             Settings.Default.InjectedColor = InjectedColorPicker.SelectedColor.ToString();
+            Settings.Default.Save();
+            BatchUpdateColors();
+        }
+
+        private void TagColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            Settings.Default.TagColor = TagColorPicker.SelectedColor.ToString();
+            Settings.Default.Save();
+            BatchUpdateColors();
+        }
+
+        private void TagBackgroundColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            Settings.Default.TagBackground = TagBackgroundColorPicker.SelectedColor.ToString();
             Settings.Default.Save();
             BatchUpdateColors();
         }
@@ -82,6 +96,13 @@ namespace T4Editor.Controls
                 });
             }
 
+            settings.Add(new CategoryItemDecorationSettings
+            {
+                ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.TagColor),
+                BackgroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.TagBackground),
+                DisplayName = Constants.Tag,
+            });
+
             foreach (TextViewColorizer colorizer in _textViewsManager.GetColorizers())
             {
                 colorizer.UpdateColors(settings);
@@ -91,8 +112,8 @@ namespace T4Editor.Controls
         private Color[] GetColorsFromSettings()
         {
             return new Color[] {
-             (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor),
-                (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor),
+             (Color)ColorConverter.ConvertFromString(Settings.Default.ClassFeatureBlockColor),
+                (Color)ColorConverter.ConvertFromString(Settings.Default.ControlBlockColor),
                 (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor),
                 (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor),
                 (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor),
@@ -101,11 +122,13 @@ namespace T4Editor.Controls
 
         private void SetColorPickers()
         {
-            StatemenBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor);
-            FeatureBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor);
+            ClassFeatureBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.ClassFeatureBlockColor);
+            ControlBlockColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.ControlBlockColor);
             DirectiveColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.DirectiveColor);
             OutputColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.OutputColor);
             InjectedColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor);
+            TagColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.TagColor);
+            TagBackgroundColorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(Settings.Default.TagBackground);
         }
     }
 }

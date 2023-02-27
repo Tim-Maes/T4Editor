@@ -34,12 +34,12 @@ namespace T4Editor
         internal static ClassificationTypeDefinition T4ClassificationDefinition;
 
         [Export]
-        [Name(Constants.ClassFeatureBlock)]
+        [Name(Constants.ControlBlock)]
         [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition classFeatureBlockDefinition;
 
         [Export]
-        [Name(Constants.StatementBlock)]
+        [Name(Constants.ClassFeatureBlock)]
         [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition statementBlockDefinition;
 
@@ -57,6 +57,11 @@ namespace T4Editor
         [Name(Constants.ExpressionBlock)]
         [BaseDefinition(Constants.BaseContentType)]
         internal static ClassificationTypeDefinition expressionDefinition;
+        
+        [Export]
+        [Name(Constants.Tag)]
+        [BaseDefinition(Constants.BaseContentType)]
+        internal static ClassificationTypeDefinition tagDefinition;
 
 #pragma warning restore 169
     }

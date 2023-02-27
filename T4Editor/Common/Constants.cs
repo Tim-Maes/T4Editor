@@ -4,11 +4,11 @@
     {
         #region RegularExpressions
 
-        internal const string StatementBlockRegex = "<#((?!\"|=|@|\\+))((?!(?!)<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(?=\\s?|\\w?|\\n?)(?<!\")#>";
+        internal const string ControlBlockRegex = "(?<openingtag>(?<!\")<#((?!\"|=|@|\\+)))(?<code>((?!(?!)<#(?!\\+|=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
+        internal const string ClassFeatureBlockRegex = "(?<openingtag>(?<!\\\")<#\\+((?!\"|=|@|\\+)))(?<code>((?!(?!)<#(?!\\\\+|=)|#>)[\\s|\\w|\\d|\\\\n|().,<>\\-:;@#$%^&=*\\[\\]\\\"'+\\/\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
         internal const string OutputBlockRegex = "(?<=#>)(((?!<#(?!\\+|\\=|\")|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(?=\\s|\\w|\\n?))(?=(<#)|$(?![\\r\\n]))";
-        internal const string ClassFeatureBlockRegex = "<#\\+((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(?=\\s|\\w|\\n?)#>";
-        internal const string DirectiveRegex = "(?<=<#@)((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(?=\\s|\\w|\\n?)(?=#>)";
-        internal const string ExpressionBlockRegex = "<#=((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(\\s?)#>";
+        internal const string DirectiveRegex = "(?<openingtag>^(<#@))(?<code>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
+        internal const string ExpressionBlockRegex = "(?<openingtag><#=)(?<code>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\\\"'+\\/\\\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(\\s?)(?<closingtag>#>)";
 
         #endregion
 
@@ -23,12 +23,13 @@
 
         #region ClassificationTypes
 
-        internal static readonly string[] Types = { "T4.StatementBlock", "T4.ClassFeatureBlock", "T4.Directive", "T4.Output", "T4.Expression" };
-        internal const string StatementBlock = "T4.StatementBlock";
-        internal const string ClassFeatureBlock = "T4.ClassFeatureBlock";
+        internal static readonly string[] Types = { "T4.ClassFeature", "T4.Control", "T4.Directive", "T4.Output", "T4.Expression", "T4.Tag" };
+        internal const string ClassFeatureBlock = "T4.ClassFeature";
+        internal const string ControlBlock = "T4.Control";
         internal const string DirectiveBlock = "T4.Directive";
         internal const string OutputBlock = "T4.Output";
         internal const string ExpressionBlock = "T4.Expression";
+        internal const string Tag = "T4.Tag";
 
         #endregion
 

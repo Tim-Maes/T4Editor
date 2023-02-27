@@ -7,25 +7,25 @@ using T4Editor.Common;
 namespace T4Editor
 {
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.ClassFeatureBlock)]
-    [Name(Constants.ClassFeatureBlock)]
+    [ClassificationType(ClassificationTypeNames = Constants.ControlBlock)]
+    [Name(Constants.ControlBlock)]
     internal sealed class T4ClassFeature : ClassificationFormatDefinition
     {
         public T4ClassFeature()
         {
-            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.FeatureBlockColor);
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.ControlBlockColor);
             this.BackgroundColor = Colors.Transparent;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.StatementBlock)]
-    [Name(Constants.StatementBlock)]
+    [ClassificationType(ClassificationTypeNames = Constants.ClassFeatureBlock)]
+    [Name(Constants.ClassFeatureBlock)]
     internal sealed class T4Statement : ClassificationFormatDefinition
     {
         public T4Statement()
         {
-            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.StatementBlockColor);
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.ClassFeatureBlockColor);
             this.BackgroundColor = Colors.Transparent;
         }
     }
@@ -63,7 +63,18 @@ namespace T4Editor
         {
             this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.InjectedColor);
             this.BackgroundColor = Colors.Transparent;
-            this.IsBold = true;
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = Constants.Tag)]
+    [Name(Constants.Tag)]
+    internal sealed class TagDirective : ClassificationFormatDefinition
+    {
+        public TagDirective()
+        {
+            this.ForegroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.TagColor);
+            this.BackgroundColor = (Color)ColorConverter.ConvertFromString(Settings.Default.TagBackground);
         }
     }
 }
