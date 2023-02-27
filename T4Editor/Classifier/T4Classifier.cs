@@ -46,9 +46,9 @@ namespace T4Editor
             var document = snapshot.GetText();
 
             MatchCollection directiveMatches = Regex.Matches(document, Constants.DirectiveRegex);
+            MatchCollection controlBlockMatches = Regex.Matches(document, Constants.ControlBlockRegex);
             MatchCollection classFeatureBlockMatches = Regex.Matches(document, Constants.ClassFeatureBlockRegex);
-            MatchCollection statementBlockMatches = Regex.Matches(document, Constants.StatementBlockRegex);
-            MatchCollection injectedMatches = Regex.Matches(document, Constants.ExpressionBlockRegex);
+            MatchCollection expressionBlockMatches = Regex.Matches(document, Constants.ExpressionBlockRegex);
             MatchCollection outputMatches = Regex.Matches(document, Constants.OutputBlockRegex);
 
             IClassificationType type = null;
@@ -57,8 +57,37 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
+                    var openingTagMatch = match.Groups["openingtag"];
+                    var codeMatch = match.Groups["code"];
+                    var opclosingTagMatch = match.Groups["closingtag"];
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
+
                     type = _classificationTypeRegistry.GetClassificationType(Constants.DirectiveBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
+                }
+            }
+
+            foreach (Match match in controlBlockMatches)
+            {
+                if (match.Success)
+                {
+                    var openingTagMatch = match.Groups["openingtag"];
+                    var codeMatch = match.Groups["code"];
+                    var opclosingTagMatch = match.Groups["closingtag"];
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.ControlBlock);
+                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
                 }
             }
 
@@ -66,26 +95,37 @@ namespace T4Editor
             {
                 if (match.Success)
                 {
+                    var openingTagMatch = match.Groups["openingtag"];
+                    var codeMatch = match.Groups["code"];
+                    var opclosingTagMatch = match.Groups["closingtag"];
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
+
                     type = _classificationTypeRegistry.GetClassificationType(Constants.ClassFeatureBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
                 }
             }
 
-            foreach (Match match in statementBlockMatches)
+            foreach (Match match in expressionBlockMatches)
             {
                 if (match.Success)
                 {
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.StatementBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
-                }
-            }
+                    var openingTagMatch = match.Groups["openingtag"];
+                    var codeMatch = match.Groups["code"];
+                    var opclosingTagMatch = match.Groups["closingtag"];
 
-            foreach (Match match in injectedMatches)
-            {
-                if (match.Success)
-                {
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
+
                     type = _classificationTypeRegistry.GetClassificationType(Constants.ExpressionBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
+
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
+                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
                 }
             }
 
