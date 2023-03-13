@@ -7,6 +7,7 @@ Extension for Visual Studio that increases productivity when working with T4 tem
 
 ## Features
 
+- Highlighted T4 tags
 - Set custom colors for different code blocks.
 - Code completion for code blocks.
 - Brace matching
