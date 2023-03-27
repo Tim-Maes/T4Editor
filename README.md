@@ -20,5 +20,6 @@ Extension for Visual Studio that increases productivity when working with T4 tem
 - Set colors via `Extensions > T4Editor > Adjust Colors`
 
 Demo (outdated)
+
 ![Example](https://thumbs.gfycat.com/BlankAlertFrenchbulldog.webp)
 
