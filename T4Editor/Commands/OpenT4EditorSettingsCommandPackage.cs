@@ -48,7 +48,10 @@ namespace T4Editor.Commands
 
             if (selectedValue != null)
             {
-                if(selectedValue == "Light Theme")
+                Settings.Default.FirstInstall = false;
+                Settings.Default.Save();
+
+                if (selectedValue == "Light Theme")
                 {
                     SetLightThemeColors();
                 }
@@ -56,8 +59,6 @@ namespace T4Editor.Commands
                 {
                     SetDarkThemeColors();
                 }
-
-                Settings.Default.FirstInstall = false;
             }
         }
 
