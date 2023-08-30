@@ -69,6 +69,10 @@
     <Compile Include="Completion\T4CompletionHandlerProvider.cs" />
     <Compile Include="Completion\T4CompletionSource.cs" />
     <Compile Include="Completion\T4CompletionSourceProvider.cs" />
+    <Compile Include="Controls\FirstInstallControl.xaml.cs">
+      <DependentUpon>FirstInstallControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FirstInstallDialog.cs" />
     <Compile Include="Extensions\MefExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\ServiceProviderExtensions.cs" />
@@ -144,6 +148,10 @@
   <ItemGroup />
   <ItemGroup>
     <Page Include="Controls\ColorPickerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FirstInstallControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
