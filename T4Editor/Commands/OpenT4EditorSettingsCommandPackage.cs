@@ -71,6 +71,7 @@ namespace T4Editor.Commands
             Settings.Default.InjectedColor = "#DAA520";
             Settings.Default.TagBackground = "#FFFAFAD2";
             Settings.Default.TagColor = "#FF000000";
+            Settings.Default.Save();
             BatchUpdateColors();
         }
 
@@ -83,6 +84,7 @@ namespace T4Editor.Commands
             Settings.Default.InjectedColor = "#FF000000";
             Settings.Default.TagBackground = "#FFFAFAD2";
             Settings.Default.TagColor = "#FF000000";
+            Settings.Default.Save();
             BatchUpdateColors();
         }
         public void BatchUpdateColors()
