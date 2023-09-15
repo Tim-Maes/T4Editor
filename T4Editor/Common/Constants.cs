@@ -1,14 +1,16 @@
-﻿namespace T4Editor.Common
+using System.Text.RegularExpressions;
+
+namespace T4Editor.Common
 {
     internal static class Constants
     {
         #region RegularExpressions
 
-        internal const string ControlBlockRegex = "(?<openingtag>(?<!\")<#((?!\"|=|@|\\+)))(?<code>((?!(?!)<#(?!\\+|=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
-        internal const string ClassFeatureBlockRegex = "(?<openingtag>(?<!\\\")<#\\+((?!\"|=|@|\\+)))(?<code>((?!(?!)<#(?!\\\\+|=)|#>)[\\s|\\w|\\d|\\\\n|().,<>\\-:;@#$%^&=*\\[\\]\\\"'+\\/\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
-        internal const string OutputBlockRegex = "(?<=#>)(((?!<#(?!\\+|\\=|\")|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(?=\\s|\\w|\\n?))(?=(<#)|$(?![\\r\\n]))";
-        internal const string DirectiveRegex = "(?<openingtag>^(<#@))(?<code>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
-        internal const string ExpressionBlockRegex = "(?<openingtag><#=)(?<code>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\\\"'+\\/\\\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(\\s?)(?<closingtag>#>)";
+        private const string ControlBlockRegexPattern      = /* language=regex */ "(?<openingtag>(?<!\")<#((?!\"|=|@|\\+)))(?<code>((?!(?!)<#(?!\\+|=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
+        private const string ClassFeatureBlockRegexPattern = /* language=regex */ "(?<openingtag>(?<!\\\")<#\\+((?!\"|=|@|\\+)))(?<code>((?!(?!)<#(?!\\\\+|=)|#>)[\\s|\\w|\\d|\\\\n|().,<>\\-:;@#$%^&=*\\[\\]\\\"'+\\/\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
+        private const string OutputBlockRegexPattern       = /* language=regex */ "(?<=#>)(((?!<#(?!\\+|\\=|\")|#>)[\\s|\\w|\\d|\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\u2000-\\u206F\\u2E00-\\u2E7F])*(?=\\s|\\w|\\n?))(?=(<#)|$(?![\\r\\n]))";
+        private const string DirectiveRegexPattern         = /* language=regex */ "(?<openingtag>^(<#@))(?<code>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\"'+\\/\\\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(?<closingtag>(?=\\s?|\\w?|\\n?)(?<!\")#>(?!\"))";
+        private const string ExpressionBlockRegexPattern   = /* language=regex */ "(?<openingtag><#=)(?<code>((?!<#(?!\\+|\\=)|#>)[\\s|\\w|\\d|\\n|().,<>\\-:;@#$%^&=*\\[\\]\\\"'+\\/\\\\®°⁰!?{}|`~\\\\u2000-\\\\u206F\\\\u2E00-\\\\u2E7F])*)(\\s?)(?<closingtag>#>)";
 
         #endregion
 
@@ -49,4 +51,13 @@
 
         #endregion
     }
+
+     internal static class Regexs
+     {
+          public static Regex ControlBlock      { get; } = new Regex( Constants.ControlBlockRegexPattern, RegexOptions.Compiled );
+          public static Regex ClassFeatureBlock { get; } = new Regex( Constants.ClassFeatureBlockRegexPattern, RegexOptions.Compiled );
+          public static Regex OutputBlock       { get; } = new Regex( Constants.OutputBlockRegexPattern, RegexOptions.Compiled );
+          public static Regex Directive         { get; } = new Regex( Constants.DirectiveRegexPattern, RegexOptions.Compiled );
+          public static Regex ExpressionBlock   { get; } = new Regex( Constants.ExpressionBlockRegexPattern, RegexOptions.Compiled );
+     }
 }
