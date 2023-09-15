@@ -44,15 +44,10 @@ namespace T4Editor
                 return spans;
 
             var document = snapshot.GetText();
-
-            MatchCollection directiveMatches = Regex.Matches(document, Constants.DirectiveRegex);
-            MatchCollection controlBlockMatches = Regex.Matches(document, Constants.ControlBlockRegex);
-            MatchCollection classFeatureBlockMatches = Regex.Matches(document, Constants.ClassFeatureBlockRegex);
-            MatchCollection expressionBlockMatches = Regex.Matches(document, Constants.ExpressionBlockRegex);
-            MatchCollection outputMatches = Regex.Matches(document, Constants.OutputBlockRegex);
-
+            
             IClassificationType type = null;
 
+            MatchCollection directiveMatches = Regexen.Directive.Matches(document);
             foreach (Match match in directiveMatches)
             {
                 if (match.Success)
@@ -72,6 +67,7 @@ namespace T4Editor
                 }
             }
 
+            MatchCollection controlBlockMatches = Regexen.ControlBlock.Matches(document);
             foreach (Match match in controlBlockMatches)
             {
                 if (match.Success)
@@ -90,7 +86,8 @@ namespace T4Editor
                     spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
                 }
             }
-
+            
+            MatchCollection classFeatureBlockMatches = Regexen.ClassFeatureBlock.Matches(document);
             foreach (Match match in classFeatureBlockMatches)
             {
                 if (match.Success)
@@ -109,7 +106,8 @@ namespace T4Editor
                     spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
                 }
             }
-
+            
+            MatchCollection expressionBlockMatches = Regexen.ExpressionBlock.Matches(document);
             foreach (Match match in expressionBlockMatches)
             {
                 if (match.Success)
@@ -129,6 +127,7 @@ namespace T4Editor
                 }
             }
 
+            MatchCollection outputMatches = Regexen.OutputBlock.Matches(document);
             foreach (Match match in outputMatches)
             {
                 if (match.Success)
