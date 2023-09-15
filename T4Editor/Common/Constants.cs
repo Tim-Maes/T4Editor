@@ -52,7 +52,7 @@ namespace T4Editor.Common
         #endregion
     }
 
-     internal static class Regexs
+     internal static class Regexen
      {
           public static Regex ControlBlock      { get; } = new Regex( Constants.ControlBlockRegexPattern, RegexOptions.Compiled );
           public static Regex ClassFeatureBlock { get; } = new Regex( Constants.ClassFeatureBlockRegexPattern, RegexOptions.Compiled );
