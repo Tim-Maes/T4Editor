@@ -48,93 +48,38 @@ namespace T4Editor
 
             IClassificationType type = null;
 
-            MatchCollection directiveMatches = Regexen.Directive.Matches(document);
-            foreach (Match match in directiveMatches)
+            MatchCollection matches = Constants.Regexen.VSOfficialPattern.Matches(document);
+
+            foreach (Match match in matches)
             {
-                if (match.Success)
+                if (match.Groups["directive"].Success)
                 {
-                    var openingTagMatch = match.Groups["openingtag"];
-                    var codeMatch = match.Groups["code"];
-                    var opclosingTagMatch = match.Groups["closingtag"];
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
-
                     type = _classificationTypeRegistry.GetClassificationType(Constants.DirectiveBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, match.Groups["directive"].Index, match.Groups["directive"].Length, type));
                 }
-            }
 
-            MatchCollection controlBlockMatches = Regexen.ControlBlock.Matches(document);
-            foreach (Match match in controlBlockMatches)
-            {
-                if (match.Success)
+                if (match.Groups["classfeature"].Success)
                 {
-                    var openingTagMatch = match.Groups["openingtag"];
-                    var codeMatch = match.Groups["code"];
-                    var opclosingTagMatch = match.Groups["closingtag"];
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.ControlBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
-                }
-            }
-
-            MatchCollection classFeatureBlockMatches = Regexen.ClassFeatureBlock.Matches(document);
-            foreach (Match match in classFeatureBlockMatches)
-            {
-                if (match.Success)
-                {
-                    var openingTagMatch = match.Groups["openingtag"];
-                    var codeMatch = match.Groups["code"];
-                    var opclosingTagMatch = match.Groups["closingtag"];
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
-
                     type = _classificationTypeRegistry.GetClassificationType(Constants.ClassFeatureBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, match.Groups["classfeature"].Index, match.Groups["classfeature"].Length, type));
                 }
-            }
 
-            MatchCollection expressionBlockMatches = Regexen.ExpressionBlock.Matches(document);
-            foreach (Match match in expressionBlockMatches)
-            {
-                if (match.Success)
+                if (match.Groups["expression"].Success)
                 {
-                    var openingTagMatch = match.Groups["openingtag"];
-                    var codeMatch = match.Groups["code"];
-                    var opclosingTagMatch = match.Groups["closingtag"];
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, openingTagMatch.Index, openingTagMatch.Value.Length, type));
-
                     type = _classificationTypeRegistry.GetClassificationType(Constants.ExpressionBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, codeMatch.Index, codeMatch.Value.Length, type));
-
-                    type = _classificationTypeRegistry.GetClassificationType(Constants.Tag);
-                    spans.Add(CreateClassificationSpan(snapshot, opclosingTagMatch.Index, opclosingTagMatch.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, match.Groups["expression"].Index, match.Groups["expression"].Length, type));
                 }
-            }
 
-            MatchCollection outputMatches = Regexen.OutputBlock.Matches(document);
-            foreach (Match match in outputMatches)
-            {
-                if (match.Success)
+                if (match.Groups["statement"].Success)
+                {
+                    type = _classificationTypeRegistry.GetClassificationType(Constants.ControlBlock);
+                    spans.Add(CreateClassificationSpan(snapshot, match.Groups["statement"].Index, match.Groups["statement"].Length, type));
+                }
+
+                if (match.Groups["boilerplate"].Success)
                 {
                     type = _classificationTypeRegistry.GetClassificationType(Constants.OutputBlock);
-                    spans.Add(CreateClassificationSpan(snapshot, match.Index, match.Value.Length, type));
+                    spans.Add(CreateClassificationSpan(snapshot, match.Groups["boilerplate"].Index, match.Groups["boilerplate"].Length, type));
                 }
             }
 
