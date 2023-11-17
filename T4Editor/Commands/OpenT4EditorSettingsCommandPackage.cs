@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -8,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Media;
 using T4Editor.Classifier;
-using T4Editor.Controls;
 using Constants = T4Editor.Common.Constants;
 using Task = System.Threading.Tasks.Task;
+
 
 namespace T4Editor.Commands
 {
@@ -36,30 +37,28 @@ namespace T4Editor.Commands
         {
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            await OpenT4EditorSettingsCommand.InitializeAsync(this);
+            VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
 
-            if(Settings.Default.FirstInstall) ShowFirstRunDialog();
-        }
-
-        private void ShowFirstRunDialog()
-        {
-            var dialog = new FirstInstallDialog();
-            var selectedValue = dialog.ShowAndRetrieveSelection();
-
-            if (selectedValue != null)
+            if (Settings.Default.FirstInstall)
             {
+                var themedColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey).ToString();
+
+                if (themedColor == Constants.LightTheme) SetLightThemeColors();
+                else SetDarkThemeColors();
+
                 Settings.Default.FirstInstall = false;
                 Settings.Default.Save();
-
-                if (selectedValue == "Light Theme")
-                {
-                    SetLightThemeColors();
-                }
-                else
-                {
-                    SetDarkThemeColors();
-                }
             }
+
+            await OpenT4EditorSettingsCommand.InitializeAsync(this);
+        }
+
+        private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
+        {
+            var themedColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey).ToString();
+
+            if (themedColor == Constants.LightTheme) SetLightThemeColors();
+            else SetDarkThemeColors();
         }
 
         private void SetDarkThemeColors()
@@ -87,6 +86,7 @@ namespace T4Editor.Commands
             Settings.Default.Save();
             BatchUpdateColors();
         }
+
         public void BatchUpdateColors()
         {
             if (_textViewsManager == null) this.SatisfyImportsOnce();
