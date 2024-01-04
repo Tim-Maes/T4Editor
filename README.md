@@ -9,7 +9,7 @@ Extension for Visual Studio that increases productivity when working with T4 tem
 
 ## Features
 
-- Defaults for Dark/Light VS theme
+- Default scheme for Dark/Light VS theme
 - Automatically applies new colors if you change the VS theme
 - Highlighted T4 tags
 - Set custom colors for different code blocks.
