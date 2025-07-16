@@ -37,6 +37,7 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 - **Smart Brace Matching**: Highlights matching braces, brackets, parentheses, and quotes
 - **Code Outlining**: Collapsible regions for T4 blocks to manage large templates
 - **Block Navigation**: Easily navigate between related T4 constructs
+- **Error Detection**: Identifies unclosed T4 blocks and syntax issues
 
 ### **Visual Studio Integration**
 
@@ -47,10 +48,12 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 
 ### **High Performance**
 
-- **Optimized for Large Files**: Efficient parsing for templates over 50KB
+- **Token-Based Parsing**: Modern linear parsing approach replaces complex RegEx patterns
+- **Optimized for Large Files**: Efficient parsing for templates over 50KB with minimal performance impact
 - **Smart Caching**: Intelligent result caching for improved responsiveness
-- **Regex Timeout Protection**: Prevents UI freezing on complex content
 - **Incremental Processing**: Only processes visible areas in large files
+- **Error-Tolerant**: Gracefully handles malformed content without UI freezing
+- **Future-Ready**: Designed to support C# language features within T4 blocks
 
 ## Installation
 
@@ -87,6 +90,7 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 - **Syntax Colors**: Customize colors for each T4 block type
 - **Theme Integration**: Automatic theme detection and color adjustment
 - **Performance Settings**: Adjust parsing thresholds for large files
+- **Parser Selection**: Choose between token-based and legacy parsing (advanced users)
 
 ### IntelliSense in Action
 
@@ -96,24 +100,6 @@ When you type `<#`, T4Editor provides intelligent suggestions:
 - `<#=...#>` - Expression Block
 - `<#@ import #>` - Import Directive
 - `<#@ include #>` - Include Directive
-
-## Architecture & Performance
-
-T4Editor is built with performance and reliability in mind:
-
-### Smart Parsing Strategy
-
-- **Small Files (< 50KB)**: Full document parsing with intelligent caching
-- **Large Files (> 50KB)**: Incremental parsing of visible areas
-- **Complex Content**: Fallback parser for regex-intensive scenarios
-
-### Performance Optimizations
-
-- **Classification Type Caching**: 90% reduction in registry lookups
-- **Snapshot Result Caching**: Eliminates redundant parsing
-- **Targeted Processing**: Only parses visible content in large files  
-- **Timeout Protection**: Prevents UI freezing on malformed content
-- **Graceful Fallbacks**: Maintains functionality even with complex templates
 
 ## Contributing
 
@@ -127,13 +113,11 @@ We welcome contributions! Here's how you can help:
    - .NET Framework 4.7.2
 
 3. **Build and Test**
- 
-- Open T4Editor.sln in Visual Studio
-- Build solution (Ctrl+Shift+B)
-- Press F5 to run in experimental instance
+   - Open T4Editor.sln in Visual Studio
+   - Build solution (Ctrl+Shift+B)
+   - Press F5 to run in experimental instance
 
 ## Troubleshooting
-
 ### Getting Help
 - [Create an issue](https://github.com/Tim-Maes/T4Editor/issues) on GitHub
 - Check existing issues for solutions
@@ -142,4 +126,3 @@ We welcome contributions! Here's how you can help:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
-

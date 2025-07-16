@@ -140,7 +140,6 @@ namespace T4Editor
         {
             IClassificationType type = null;
 
-            // Process directive blocks
             MatchCollection directiveMatches = Regexen.Directive.Matches(document);
             foreach (Match match in directiveMatches)
             {
@@ -161,7 +160,6 @@ namespace T4Editor
                 }
             }
 
-            // Process control blocks
             MatchCollection controlBlockMatches = Regexen.ControlBlock.Matches(document);
             foreach (Match match in controlBlockMatches)
             {
@@ -182,7 +180,6 @@ namespace T4Editor
                 }
             }
 
-            // Process class feature blocks
             MatchCollection classFeatureBlockMatches = Regexen.ClassFeatureBlock.Matches(document);
             foreach (Match match in classFeatureBlockMatches)
             {
@@ -203,7 +200,6 @@ namespace T4Editor
                 }
             }
 
-            // Process expression blocks
             MatchCollection expressionBlockMatches = Regexen.ExpressionBlock.Matches(document);
             foreach (Match match in expressionBlockMatches)
             {
@@ -224,7 +220,6 @@ namespace T4Editor
                 }
             }
 
-            // Process output blocks
             MatchCollection outputMatches = Regexen.OutputBlock.Matches(document);
             foreach (Match match in outputMatches)
             {

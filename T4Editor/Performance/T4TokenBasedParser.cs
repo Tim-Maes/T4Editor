@@ -35,7 +35,6 @@ namespace T4Editor.Performance
         /// </summary>
         public List<ClassificationSpan> ParseRange(string text, ITextSnapshot snapshot, int start, int length, int offset = 0)
         {
-            // Extend boundaries to capture complete blocks
             int expandedStart = Math.Max(0, start - 200);
             int expandedEnd = Math.Min(text.Length, start + length + 200);
             
@@ -90,12 +89,10 @@ namespace T4Editor.Performance
 
             while (position < text.Length)
             {
-                // Look for the next T4 block
                 int blockStart = text.IndexOf("<#", position);
                 
                 if (blockStart == -1)
                 {
-                    // No more blocks, rest is output text
                     if (position < text.Length)
                     {
                         AddOutputSpan(spans, snapshot, offset + position, text.Length - position);
@@ -103,13 +100,11 @@ namespace T4Editor.Performance
                     break;
                 }
 
-                // Add output text before the block
                 if (blockStart > position)
                 {
                     AddOutputSpan(spans, snapshot, offset + position, blockStart - position);
                 }
 
-                // Parse the T4 block
                 var blockEnd = ParseT4Block(text, blockStart, spans, snapshot, offset);
                 if (blockEnd > blockStart)
                 {
@@ -117,7 +112,6 @@ namespace T4Editor.Performance
                 }
                 else
                 {
-                    // If we couldn't parse the block, skip the <# and continue
                     position = blockStart + 2;
                 }
             }
@@ -129,36 +123,29 @@ namespace T4Editor.Performance
         {
             if (blockStart + 1 >= text.Length)
             {
-                // Incomplete opening tag at end of file
                 AddOutputSpan(spans, snapshot, offset + blockStart, text.Length - blockStart);
                 return text.Length;
             }
 
-            // Determine block type and opening tag length
             var blockType = DetermineBlockType(text, blockStart);
             int openTagLength = GetOpenTagLength(blockType);
 
             if (blockStart + openTagLength > text.Length)
             {
-                // Incomplete opening tag
                 AddOutputSpan(spans, snapshot, offset + blockStart, text.Length - blockStart);
                 return text.Length;
             }
 
-            // Find closing tag
             int closeTagStart = FindClosingTag(text, blockStart + openTagLength);
             if (closeTagStart == -1)
             {
-                // No closing tag found - treat as output text
                 AddOutputSpan(spans, snapshot, offset + blockStart, text.Length - blockStart);
                 return text.Length;
             }
 
-            // Add opening tag span
             var tagType = _cache.GetCachedType(Constants.Tag);
             AddSpan(spans, snapshot, offset + blockStart, openTagLength, tagType);
 
-            // Add content span
             int contentStart = blockStart + openTagLength;
             int contentLength = closeTagStart - contentStart;
             if (contentLength > 0)
@@ -170,7 +157,6 @@ namespace T4Editor.Performance
                 }
             }
 
-            // Add closing tag span
             AddSpan(spans, snapshot, offset + closeTagStart, 2, tagType);
 
             return closeTagStart + 2;
