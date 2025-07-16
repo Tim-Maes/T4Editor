@@ -115,6 +115,10 @@ T4Editor is built with performance and reliability in mind:
 - **Timeout Protection**: Prevents UI freezing on malformed content
 - **Graceful Fallbacks**: Maintains functionality even with complex templates
 
+## Quick demo
+
+![T4DEmo](https://github.com/user-attachments/assets/338bbce6-0727-45b8-8d1c-2e96ae5447e2)
+
 ## Contributing
 
 We welcome contributions! Here's how you can help:
