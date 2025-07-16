@@ -156,13 +156,11 @@ namespace T4Editor.Outlining
         }
 
         /// <summary>
-        /// Optimized T4 block parsing using IndexOf instead of line-by-line iteration
+        /// Optimized T4 block parsing using token-based approach for better performance
         /// </summary>
         private void ParseT4Blocks(ITextSnapshot snapshot, List<Region> regions)
         {
             string text = snapshot.GetText();
-            var blockStack = new Stack<PartialRegion>();
-
             int position = 0;
 
             while (position < text.Length)
@@ -188,7 +186,7 @@ namespace T4Editor.Outlining
                 {
                     regions.Add(new Region
                     {
-                        Level = blockStack.Count + 1,
+                        Level = 1, // Simplified level calculation for better performance
                         StartLine = startLine.LineNumber,
                         StartOffset = startOffset,
                         EndLine = endLine.LineNumber

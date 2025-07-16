@@ -59,6 +59,10 @@ namespace T4Editor.Common
         internal const int MAX_INCREMENTAL_PARSE_SIZE = 10000; // 10KB chunks
         internal const int REGEX_TIMEOUT_MS = 100; // Timeout for regex operations
         
+        // Token-based parser settings
+        internal const bool USE_TOKEN_PARSER_BY_DEFAULT = true; // Use new token parser as primary method
+        internal const int TOKEN_PARSER_BLOCK_EXTEND_SIZE = 200; // How much to extend ranges for complete blocks
+        
         #endregion
 
         internal static class Regexen

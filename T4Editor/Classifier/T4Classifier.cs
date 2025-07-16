@@ -16,6 +16,9 @@ namespace T4Editor
 
         // Performance optimization: Use caching helper
         private readonly T4ClassificationCache _cache;
+        
+        // New token-based parser
+        private readonly T4TokenBasedParser _tokenParser;
 
         internal T4Classifier(ITextBuffer buffer, IClassificationTypeRegistryService registry)
         {
@@ -23,6 +26,7 @@ namespace T4Editor
             this._classificationTypeRegistry = registry;
             this._cache = new T4ClassificationCache();
             this._cache.InitializeCache(registry);
+            this._tokenParser = new T4TokenBasedParser(_cache);
         }
 
 #pragma warning disable 67
@@ -67,16 +71,26 @@ namespace T4Editor
 
             try
             {
-                ProcessDocumentWithRegex(spans, document, snapshot);
+                // Use the new token-based parser as the primary method
+                spans = _tokenParser.Parse(document, snapshot);
 
                 // Cache the results for future use
                 _cache.CacheSpans(snapshot, spans);
             }
-            catch (RegexMatchTimeoutException)
+            catch (Exception ex)
             {
-                // Fall back to simple parsing if regex times out
-                spans.Clear();
-                spans.AddRange(SimpleT4Parser.ParseWithStringOperations(document, snapshot, 0, _cache));
+                // Fall back to regex parsing if token parser fails for any reason
+                try
+                {
+                    ProcessDocumentWithRegex(spans, document, snapshot);
+                    _cache.CacheSpans(snapshot, spans);
+                }
+                catch (RegexMatchTimeoutException)
+                {
+                    // Final fallback to simple parsing
+                    spans.Clear();
+                    spans.AddRange(SimpleT4Parser.ParseWithStringOperations(document, snapshot, 0, _cache));
+                }
             }
 
             return spans;
@@ -88,30 +102,39 @@ namespace T4Editor
         private List<ClassificationSpan> ProcessLargeFileSpan(SnapshotSpan span)
         {
             var snapshot = span.Snapshot;
-
-            // Extend the span to capture complete T4 blocks
-            int start = Math.Max(0, span.Start - 1000);
-            int end = Math.Min(snapshot.Length, span.End + 1000);
-
-            var extendedText = snapshot.GetText(start, end - start);
-            List<ClassificationSpan> allSpans;
+            var document = snapshot.GetText();
 
             try
             {
-                allSpans = new List<ClassificationSpan>();
-                ProcessDocumentWithRegex(allSpans, extendedText, snapshot, start);
+                // Use token-based parser for range parsing
+                return _tokenParser.ParseRange(document, snapshot, span.Start, span.Length);
             }
-            catch (RegexMatchTimeoutException)
+            catch (Exception)
             {
-                // Use simple parser for problematic content
-                allSpans = SimpleT4Parser.ParseWithStringOperations(extendedText, snapshot, start, _cache);
-            }
+                // Fallback to the extended regex approach
+                int start = Math.Max(0, span.Start - 1000);
+                int end = Math.Min(snapshot.Length, span.End + 1000);
 
-            return _cache.FilterSpansForRange(allSpans, span);
+                var extendedText = snapshot.GetText(start, end - start);
+                List<ClassificationSpan> allSpans;
+
+                try
+                {
+                    allSpans = new List<ClassificationSpan>();
+                    ProcessDocumentWithRegex(allSpans, extendedText, snapshot, start);
+                }
+                catch (RegexMatchTimeoutException)
+                {
+                    // Use simple parser for problematic content
+                    allSpans = SimpleT4Parser.ParseWithStringOperations(extendedText, snapshot, start, _cache);
+                }
+
+                return _cache.FilterSpansForRange(allSpans, span);
+            }
         }
 
         /// <summary>
-        /// Process document using regex patterns with cached classification types
+        /// Legacy regex-based processing - kept as fallback
         /// </summary>
         private void ProcessDocumentWithRegex(List<ClassificationSpan> spans, string document, ITextSnapshot snapshot, int offset = 0)
         {
