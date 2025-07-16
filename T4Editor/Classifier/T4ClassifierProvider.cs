@@ -17,14 +17,13 @@ namespace T4Editor
 
 #pragma warning restore 649
 
-        static T4Classifier classifier;
-
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
-            if (classifier == null)
-                classifier = new T4Classifier(buffer, classificationRegistry);
-
-            return classifier;
+            // Performance improvement: Create separate classifier instances per buffer
+            // instead of sharing a single static instance
+            return buffer.Properties.GetOrCreateSingletonProperty(
+                typeof(T4Classifier),
+                () => new T4Classifier(buffer, classificationRegistry));
         }
     }
 }

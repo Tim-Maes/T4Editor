@@ -75,6 +75,7 @@
     <Compile Include="Outlining\BlockOutliningTagger.cs" />
     <Compile Include="Outlining\BlockOutliningTaggerProvider.cs" />
     <Compile Include="Outlining\Region.cs" />
+    <Compile Include="Performance\T4ClassificationOptimizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classifier\T4Classifier.cs" />
     <Compile Include="Classifier\T4ClassifierClassificationDefinition.cs" />

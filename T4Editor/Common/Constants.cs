@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace T4Editor.Common
 {
@@ -56,13 +57,30 @@ namespace T4Editor.Common
         internal const string LightTheme = "Color [A=255, R=245, G=245, B=245]";
         #endregion
 
+        #region Performance Constants
+        
+        // Performance thresholds for switching between parsing strategies
+        internal const int LARGE_FILE_THRESHOLD = 50000; // 50KB
+        internal const int MAX_INCREMENTAL_PARSE_SIZE = 10000; // 10KB chunks
+        internal const int REGEX_TIMEOUT_MS = 100; // Timeout for regex operations
+        
+        #endregion
+
         internal static class Regexen
         {
-            public static Regex ControlBlock { get; } = new Regex(Constants.ControlBlockRegexPattern, RegexOptions.Compiled);
-            public static Regex ClassFeatureBlock { get; } = new Regex(Constants.ClassFeatureBlockRegexPattern, RegexOptions.Compiled);
-            public static Regex OutputBlock { get; } = new Regex(Constants.OutputBlockRegexPattern, RegexOptions.Compiled);
-            public static Regex Directive { get; } = new Regex(Constants.DirectiveRegexPattern, RegexOptions.Compiled);
-            public static Regex ExpressionBlock { get; } = new Regex(Constants.ExpressionBlockRegexPattern, RegexOptions.Compiled);
+            // Performance optimization: Add timeout to prevent regex catastrophic backtracking
+            private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(REGEX_TIMEOUT_MS);
+            
+            public static Regex ControlBlock { get; } = new Regex(Constants.ControlBlockRegexPattern, 
+                RegexOptions.Compiled | RegexOptions.ExplicitCapture, RegexTimeout);
+            public static Regex ClassFeatureBlock { get; } = new Regex(Constants.ClassFeatureBlockRegexPattern, 
+                RegexOptions.Compiled | RegexOptions.ExplicitCapture, RegexTimeout);
+            public static Regex OutputBlock { get; } = new Regex(Constants.OutputBlockRegexPattern, 
+                RegexOptions.Compiled | RegexOptions.ExplicitCapture, RegexTimeout);
+            public static Regex Directive { get; } = new Regex(Constants.DirectiveRegexPattern, 
+                RegexOptions.Compiled | RegexOptions.ExplicitCapture, RegexTimeout);
+            public static Regex ExpressionBlock { get; } = new Regex(Constants.ExpressionBlockRegexPattern, 
+                RegexOptions.Compiled | RegexOptions.ExplicitCapture, RegexTimeout);
         }
     }
 }
