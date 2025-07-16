@@ -61,6 +61,7 @@
     <Compile Include="BraceMatching\T4BraceMatchingTagger.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\Instances.cs" />
+    <Compile Include="Common\ThemeDetector.cs" />
     <Compile Include="Completion\CompletionSets.cs" />
     <Compile Include="Controls\ColorPickerControl.xaml.cs">
       <DependentUpon>ColorPickerControl.xaml</DependentUpon>

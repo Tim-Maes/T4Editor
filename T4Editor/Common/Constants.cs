@@ -52,11 +52,6 @@ namespace T4Editor.Common
 
         #endregion
 
-        #region VSColorThemes
-        internal const string DarkTheme = "Color [A=255, R=31, G=31, B=31]";
-        internal const string LightTheme = "Color [A=255, R=245, G=245, B=245]";
-        #endregion
-
         #region Performance Constants
         
         // Performance thresholds for switching between parsing strategies

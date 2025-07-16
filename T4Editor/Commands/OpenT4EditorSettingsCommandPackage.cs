@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Media;
 using T4Editor.Classifier;
+using T4Editor.Common;
 using Constants = T4Editor.Common.Constants;
 using Task = System.Threading.Tasks.Task;
 
@@ -41,10 +42,15 @@ namespace T4Editor.Commands
 
             if (Settings.Default.FirstInstall)
             {
-                var themedColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey).ToString();
-
-                if (themedColor == Constants.LightTheme) SetLightThemeColors();
-                else SetDarkThemeColors();
+                // Use the new robust theme detection instead of hardcoded color comparison
+                if (ThemeDetector.IsDarkTheme())
+                {
+                    SetDarkThemeColors();
+                }
+                else
+                {
+                    SetLightThemeColors();
+                }
 
                 Settings.Default.FirstInstall = false;
                 Settings.Default.Save();
@@ -55,10 +61,15 @@ namespace T4Editor.Commands
 
         private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
         {
-            var themedColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey).ToString();
-
-            if (themedColor == Constants.LightTheme) SetLightThemeColors();
-            else SetDarkThemeColors();
+            // Use the new robust theme detection instead of hardcoded color comparison
+            if (ThemeDetector.IsDarkTheme())
+            {
+                SetDarkThemeColors();
+            }
+            else
+            {
+                SetLightThemeColors();
+            }
         }
 
         private void SetDarkThemeColors()
@@ -76,13 +87,14 @@ namespace T4Editor.Commands
 
         private void SetLightThemeColors()
         {
-            Settings.Default.ClassFeatureBlockColor = "#A9A9A9";
-            Settings.Default.ControlBlockColor = "#A9A9A9";
-            Settings.Default.DirectiveColor = "#8A9A5B";
-            Settings.Default.OutputColor = "#7393B3";
-            Settings.Default.InjectedColor = "#FF000000";
-            Settings.Default.TagBackground = "#FFFAFAD2";
-            Settings.Default.TagColor = "#FF000000";
+            // Improved light theme colors with better contrast for readability
+            Settings.Default.ClassFeatureBlockColor = "#8B4513";    // SaddleBrown - better contrast than gray
+            Settings.Default.ControlBlockColor = "#4682B4";         // SteelBlue - better visibility
+            Settings.Default.DirectiveColor = "#228B22";           // ForestGreen - better than muted olive
+            Settings.Default.OutputColor = "#2F4F4F";              // DarkSlateGray - much better contrast
+            Settings.Default.InjectedColor = "#B8860B";            // DarkGoldenrod - better than black
+            Settings.Default.TagBackground = "#F5F5DC";            // Beige - softer background
+            Settings.Default.TagColor = "#000080";                 // Navy - better than pure black
             Settings.Default.Save();
             BatchUpdateColors();
         }
