@@ -4,9 +4,11 @@
   <img src="T4Editor\T4Editor.jpg" alt="T4Editor Logo" width="128" height="128">
 </p>
 
+<center>
 |Build Status| Downloads |
 |------------|------------|
 |![Build Status](https://dev.azure.com/Epsicode/T4Editor/_apis/build/status/Tim-Maes.T4Editor%20(1)?branchName=master)|![Downloads](https://img.shields.io/visual-studio-marketplace/d/TimMaes.t4editor)|?
+</center>
 
 <p align="center">
   <strong>A powerful Visual Studio extension for enhanced T4 template editing</strong>
