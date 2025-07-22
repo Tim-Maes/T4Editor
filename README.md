@@ -109,9 +109,11 @@ When you type `<#`, T4Editor provides intelligent suggestions:
 - `<#@ import #>` - Import Directive
 - `<#@ include #>` - Include Directive
 
-## Contributing
+## Demo
 
-We welcome contributions! Here's how you can help:
+![T4DEmo](https://github.com/user-attachments/assets/bd9eb112-a638-4ef9-acbe-9fad93c5ca47)
+
+## Contributing
 
 ### Development Setup
 
