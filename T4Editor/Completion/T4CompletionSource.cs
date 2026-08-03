@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using System;
 using System.Collections.Generic;
 using T4Editor.Completion;
+using T4Editor.Projection;
 
 namespace T4Editor.Intellisense
 {
@@ -22,6 +23,10 @@ namespace T4Editor.Intellisense
 
         void ICompletionSource.AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
+            // Don't offer T4 block snippets when inside a C# code block
+            if (IsInsideCSharpBlock(session))
+                return;
+
             completionSets.Add(new CompletionSet(
                 "Tokens",   
                 "Tokens",   
@@ -29,6 +34,15 @@ namespace T4Editor.Intellisense
                     session),
                 _completionSets.GetCompletionSets(),
                 null));
+        }
+
+        private bool IsInsideCSharpBlock(ICompletionSession session)
+        {
+            if (!_textBuffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager))
+                return false;
+
+            var caretPosition = session.TextView.Caret.Position.BufferPosition.Position;
+            return manager.MapToGenerated(caretPosition).HasValue;
         }
 
         private ITrackingSpan FindTokenSpanAtPosition(ITrackingPoint point, ICompletionSession session)

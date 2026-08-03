@@ -1,0 +1,216 @@
+<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ output extension=".cs" #>
+// ============================================================================
+// Auto-generated code - do not modify manually
+// Generated at: <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #>
+// ============================================================================
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Generated.Models
+{
+<#
+    var entities = new[]
+    {
+        new { Name = "Customer", Properties = new[] { "Id:int", "FirstName:string", "LastName:string", "Email:string", "CreatedAt:DateTime", "IsActive:bool" } },
+        new { Name = "Order", Properties = new[] { "Id:int", "CustomerId:int", "OrderDate:DateTime", "TotalAmount:decimal", "Status:string", "ShippingAddress:string" } },
+        new { Name = "Product", Properties = new[] { "Id:int", "Name:string", "Description:string", "Price:decimal", "StockCount:int", "Category:string", "IsAvailable:bool" } },
+        new { Name = "Invoice", Properties = new[] { "Id:int", "OrderId:int", "InvoiceNumber:string", "IssuedDate:DateTime", "DueDate:DateTime", "Amount:decimal", "IsPaid:bool" } },
+    };
+
+    foreach (var entity in entities)
+    {
+#>
+    /// <summary>
+    /// Represents a <#= entity.Name #> entity in the system.
+    /// </summary>
+    public class <#= entity.Name #>
+    {
+<#
+        foreach (var prop in entity.Properties)
+        {
+            var parts = prop.Split(':');
+            var propName = parts[0];
+            var propType = parts[1];
+#>
+        public <#= propType #> <#= propName #> { get; set; }
+<#
+        }
+#>
+
+        public override string ToString()
+        {
+            return $"<#= entity.Name #> [Id={Id}]";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is <#= entity.Name #> other && other.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
+
+<#
+    }
+#>
+
+    // ========================================================================
+    // Repository interfaces
+    // ========================================================================
+<#
+    foreach (var entity in entities)
+    {
+#>
+    public interface I<#= entity.Name #>Repository
+    {
+        <#= entity.Name #> GetById(int id);
+        IEnumerable<<#= entity.Name #>> GetAll();
+        void Add(<#= entity.Name #> entity);
+        void Update(<#= entity.Name #> entity);
+        void Delete(int id);
+        IEnumerable<<#= entity.Name #>> Find(Func<<#= entity.Name #>, bool> predicate);
+    }
+
+<#
+    }
+#>
+
+    // ========================================================================
+    // Enum definitions
+    // ========================================================================
+<#
+    var enums = new Dictionary<string, string[]>
+    {
+        { "OrderStatus", new[] { "Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded" } },
+        { "PaymentMethod", new[] { "CreditCard", "DebitCard", "PayPal", "BankTransfer", "Crypto", "Cash" } },
+        { "UserRole", new[] { "Admin", "Manager", "Employee", "Customer", "Guest" } },
+    };
+
+    foreach (var kvp in enums)
+    {
+#>
+    public enum <#= kvp.Key #>
+    {
+<#
+        for (int i = 0; i < kvp.Value.Length; i++)
+        {
+            var comma = i < kvp.Value.Length - 1 ? "," : "";
+#>
+        <#= kvp.Value[i] #> = <#= i #><#= comma #>
+<#
+        }
+#>
+    }
+
+<#
+    }
+#>
+
+    // ========================================================================
+    // Service layer
+    // ========================================================================
+<#
+    foreach (var entity in entities)
+    {
+#>
+    public class <#= entity.Name #>Service
+    {
+        private readonly I<#= entity.Name #>Repository _repository;
+
+        public <#= entity.Name #>Service(I<#= entity.Name #>Repository repository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        public <#= entity.Name #> Get(int id)
+        {
+            if (id <= 0) throw new ArgumentException("Id must be positive", nameof(id));
+            return _repository.GetById(id);
+        }
+
+        public IEnumerable<<#= entity.Name #>> GetAll() => _repository.GetAll();
+
+        public void Create(<#= entity.Name #> entity)
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            _repository.Add(entity);
+        }
+
+        public void Remove(int id)
+        {
+            if (id <= 0) throw new ArgumentException("Id must be positive", nameof(id));
+            _repository.Delete(id);
+        }
+    }
+
+<#
+    }
+#>
+}
+
+<#+
+    // ========================================================================
+    // Class feature block - helper methods available to all code above
+    // ========================================================================
+
+    private string ToCamelCase(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        return char.ToLowerInvariant(input[0]) + input.Substring(1);
+    }
+
+    private string ToPlural(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        if (input.EndsWith("y"))
+            return input.Substring(0, input.Length - 1) + "ies";
+        if (input.EndsWith("s") || input.EndsWith("x") || input.EndsWith("ch"))
+            return input + "es";
+        return input + "s";
+    }
+
+    private string GetDefaultValue(string typeName)
+    {
+        switch (typeName)
+        {
+            case "int": return "0";
+            case "decimal": return "0m";
+            case "bool": return "false";
+            case "DateTime": return "DateTime.MinValue";
+            case "string": return "string.Empty";
+            default: return "default";
+        }
+    }
+
+    private IEnumerable<string> WrapLines(string text, int maxLength)
+    {
+        var words = text.Split(' ');
+        var currentLine = new StringBuilder();
+
+        foreach (var word in words)
+        {
+            if (currentLine.Length + word.Length + 1 > maxLength)
+            {
+                yield return currentLine.ToString();
+                currentLine.Clear();
+            }
+            if (currentLine.Length > 0) currentLine.Append(' ');
+            currentLine.Append(word);
+        }
+
+        if (currentLine.Length > 0)
+            yield return currentLine.ToString();
+    }
+#>

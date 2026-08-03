@@ -33,7 +33,11 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 
 ### **Intelligent IntelliSense**
 
-- **Context-Aware Code Completion**: Smart suggestions for T4 syntax elements
+- **C# Language Services**: Full Roslyn-powered IntelliSense inside code blocks
+  - Type and member completion
+  - Context-aware suggestions based on available variables and types
+  - Powered by a hidden Roslyn workspace with framework references
+- **Context-Aware Completion**: C# completions inside code blocks, T4 snippets outside
 - **Predefined T4 Constructs**: Quick insertion of common patterns
   - Control block templates
   - Class feature block scaffolding
@@ -46,6 +50,8 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 - **Code Outlining**: Collapsible regions for T4 blocks to manage large templates
 - **Block Navigation**: Easily navigate between related T4 constructs
 - **Error Detection**: Identifies unclosed T4 blocks and syntax issues
+- **C# Error Squiggles**: Real-time Roslyn diagnostics shown as squiggles inside code blocks
+- **C# Syntax Highlighting**: Full C# colorization (keywords, types, strings, etc.) within code blocks
 
 ### **Visual Studio Integration**
 
@@ -61,7 +67,6 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 - **Smart Caching**: Intelligent result caching for improved responsiveness
 - **Incremental Processing**: Only processes visible areas in large files
 - **Error-Tolerant**: Gracefully handles malformed content without UI freezing
-- **Future-Ready**: Designed to support C# language features within T4 blocks
 
 ## Installation
 
@@ -102,16 +107,15 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 
 ### IntelliSense in Action
 
-When you type `<#`, T4Editor provides intelligent suggestions:
+When editing outside code blocks, T4Editor provides T4 snippet suggestions:
 - `<#...#>` - Control Block
 - `<#+...#>` - Class Feature Block  
 - `<#=...#>` - Expression Block
 - `<#@ import #>` - Import Directive
 - `<#@ include #>` - Include Directive
 
-## Demo
+When editing inside code blocks (`<# #>`, `<#+ #>`, `<#= #>`), you get full C# IntelliSense powered by Roslyn, including types, members, and framework APIs.
 
-![T4DEmo](https://github.com/user-attachments/assets/bd9eb112-a638-4ef9-acbe-9fad93c5ca47)
 
 ## Contributing
 
@@ -121,6 +125,7 @@ When you type `<#`, T4Editor provides intelligent suggestions:
 2. **Prerequisites**
    - Visual Studio 2019/2022 with VSIX development workload
    - .NET Framework 4.7.2
+   - NuGet packages: Microsoft.CodeAnalysis.CSharp.Workspaces, Microsoft.CodeAnalysis.CSharp.Features
 
 3. **Build and Test**
    - Open T4Editor.sln in Visual Studio
