@@ -16,7 +16,14 @@
 
 </div>
 
-T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanced editing features to T4 (Text Template Transformation Toolkit) files in Visual Studio. Whether you're working with code generation, automated documentation, or template-based development, T4Editor transforms your T4 editing experience.
+T4Editor brings professional-grade syntax highlighting, IntelliSense, C# language features to T4 (Text Template Transformation Toolkit) files in Visual Studio. Whether you're working with code generation, automated documentation, or template-based development, T4Editor transforms your T4 editing experience.
+
+
+<div align="center">
+
+<img width="1825" height="744" alt="image" src="https://github.com/user-attachments/assets/f8ad260a-3af4-46dc-9027-db696b078f75" />
+
+</div>
 
 ## Key Features
 
@@ -68,6 +75,20 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 - **Incremental Processing**: Only processes visible areas in large files
 - **Error-Tolerant**: Gracefully handles malformed content without UI freezing
 
+### IntelliSense in Action
+
+When editing outside code blocks, T4Editor provides T4 snippet suggestions:
+- `<#...#>` - Control Block
+- `<#+...#>` - Class Feature Block  
+- `<#=...#>` - Expression Block
+- `<#@ import #>` - Import Directive
+- `<#@ include #>` - Include Directive
+
+When editing inside code blocks (`<# #>`, `<#+ #>`, `<#= #>`), you get full C# IntelliSense powered by Roslyn, including types, members, and framework APIs.
+
+<img width="1712" height="357" alt="image" src="https://github.com/user-attachments/assets/0880fb8d-8341-4d0a-bfd8-250f2b10e35e" />
+
+
 ## Installation
 
 ### Visual Studio Marketplace
@@ -104,18 +125,6 @@ T4Editor brings professional-grade syntax highlighting, IntelliSense, and advanc
 - **Theme Integration**: Automatic theme detection and color adjustment
 - **Performance Settings**: Adjust parsing thresholds for large files
 - **Parser Selection**: Choose between token-based and legacy parsing (advanced users)
-
-### IntelliSense in Action
-
-When editing outside code blocks, T4Editor provides T4 snippet suggestions:
-- `<#...#>` - Control Block
-- `<#+...#>` - Class Feature Block  
-- `<#=...#>` - Expression Block
-- `<#@ import #>` - Import Directive
-- `<#@ include #>` - Include Directive
-
-When editing inside code blocks (`<# #>`, `<#+ #>`, `<#= #>`), you get full C# IntelliSense powered by Roslyn, including types, members, and framework APIs.
-
 
 ## Contributing
 
