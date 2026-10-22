@@ -111,20 +111,21 @@ namespace T4Editor.Projection
             {
                 if (block.Type == T4BlockType.Directive)
                 {
-                    var usingStatement = ExtractUsing(block.Content);
-                    if (usingStatement != null)
+                    if (TryExtractImportNamespace(block.Content, out int nsOffset, out int nsLength))
                     {
+                        sb.Append("using ");
                         int genStart = sb.Length;
-                        sb.Append(usingStatement);
-                        sb.Append('\n');
+                        sb.Append(block.Content, nsOffset, nsLength);
+                        sb.Append(";\n");
 
-                        // Map the namespace portion back to T4
+                        // Map only the namespace text: it is identical on both sides,
+                        // so offsets within the span translate one-to-one
                         mappings.Add(new SpanMapping
                         {
-                            T4Start = block.ContentStart,
-                            T4Length = block.ContentLength,
+                            T4Start = block.ContentStart + nsOffset,
+                            T4Length = nsLength,
                             GeneratedStart = genStart,
-                            GeneratedLength = usingStatement.Length,
+                            GeneratedLength = nsLength,
                             BlockType = T4MappingBlockType.UsingDirective
                         });
                     }
@@ -213,32 +214,40 @@ namespace T4Editor.Projection
         }
 
         /// <summary>
-        /// Extracts a using statement from a T4 import directive.
-        /// E.g., ' import namespace="System.Linq" ' → 'using System.Linq;'
+        /// Locates the namespace value of a T4 import directive within the directive content.
+        /// E.g., ' import namespace="System.Linq" ' → offset and length of 'System.Linq'
         /// </summary>
-        private string ExtractUsing(string directiveContent)
+        private bool TryExtractImportNamespace(string directiveContent, out int offset, out int length)
         {
-            // Look for: import namespace="..."
-            var trimmed = directiveContent.Trim();
+            offset = 0;
+            length = 0;
+
+            // Look for: import namespace="..." (or single quotes)
+            var trimmed = directiveContent.TrimStart();
             if (!trimmed.StartsWith("import", StringComparison.OrdinalIgnoreCase))
-                return null;
+                return false;
 
-            int nsStart = trimmed.IndexOf("namespace=\"", StringComparison.OrdinalIgnoreCase);
-            if (nsStart == -1)
-            {
-                nsStart = trimmed.IndexOf("namespace='", StringComparison.OrdinalIgnoreCase);
-                if (nsStart == -1) return null;
-            }
+            const string attribute = "namespace=";
+            int attrStart = directiveContent.IndexOf(attribute, StringComparison.OrdinalIgnoreCase);
+            if (attrStart == -1)
+                return false;
 
-            nsStart += "namespace=\"".Length;
-            int nsEnd = trimmed.IndexOf('"', nsStart);
+            int quotePos = attrStart + attribute.Length;
+            if (quotePos >= directiveContent.Length)
+                return false;
+
+            char quote = directiveContent[quotePos];
+            if (quote != '"' && quote != '\'')
+                return false;
+
+            int nsStart = quotePos + 1;
+            int nsEnd = directiveContent.IndexOf(quote, nsStart);
             if (nsEnd == -1)
-                nsEnd = trimmed.IndexOf('\'', nsStart);
-            if (nsEnd == -1)
-                return null;
+                return false;
 
-            string ns = trimmed.Substring(nsStart, nsEnd - nsStart);
-            return $"using {ns};";
+            offset = nsStart;
+            length = nsEnd - nsStart;
+            return true;
         }
 
         private T4BlockType DetermineBlockType(string text, int blockStart)

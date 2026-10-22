@@ -1,8 +1,10 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace T4Editor.Projection
 {
@@ -32,56 +35,84 @@ namespace T4Editor.Projection
     /// <summary>
     /// Provides error squiggles in T4 code blocks by querying Roslyn diagnostics
     /// from the generated C# document and mapping them back to T4 positions.
+    /// Diagnostics are computed in the background whenever the projection is regenerated.
+    /// Not IDisposable on purpose: one instance is shared by all views of the buffer,
+    /// so a closing view must not tear it down.
     /// </summary>
-    internal class T4CSharpErrorTagger : ITagger<IErrorTag>, IDisposable
+    internal class T4CSharpErrorTagger : ITagger<IErrorTag>
     {
         private readonly ITextBuffer _buffer;
-        private List<ITagSpan<IErrorTag>> _currentTags = new List<ITagSpan<IErrorTag>>();
-        private CancellationTokenSource _cts;
-        private Timer _timer;
-        private bool _disposed;
-
-        private const int UpdateDelayMs = 500;
+        private readonly object _resultsLock = new object();
+        private T4ProjectionBufferManager _manager;
+        private volatile DiagnosticResults _results;
 
         public T4CSharpErrorTagger(ITextBuffer buffer)
         {
             _buffer = buffer;
-            _buffer.Changed += OnBufferChanged;
-
-            // Initial diagnostic fetch (delayed to let projection manager initialize)
-            _timer = new Timer(_ => UpdateDiagnostics(), null, 1000, Timeout.Infinite);
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public IEnumerable<ITagSpan<IErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            return _currentTags;
+            EnsureSubscribed();
+
+            var results = _results;
+            if (results == null || spans.Count == 0)
+                yield break;
+
+            var targetSnapshot = spans[0].Snapshot;
+            foreach (var tag in results.Tags)
+            {
+                var span = results.Snapshot == targetSnapshot
+                    ? tag.Span
+                    : tag.Span.TranslateTo(targetSnapshot, SpanTrackingMode.EdgeExclusive);
+
+                if (span.Length > 0 && spans.IntersectsWith(span))
+                    yield return new TagSpan<IErrorTag>(span, tag.Tag);
+            }
         }
 
-        private void OnBufferChanged(object sender, TextContentChangedEventArgs e)
+        /// <summary>
+        /// Attaches to the buffer's projection manager, which is created by a view listener
+        /// and replaced if all views close and the buffer is opened again. UI thread only.
+        /// </summary>
+        private void EnsureSubscribed()
         {
-            // Debounce diagnostic updates
-            _cts?.Cancel();
-            _timer?.Change(UpdateDelayMs, Timeout.Infinite);
-        }
-
-        private void UpdateDiagnostics()
-        {
-            if (_disposed) return;
-
-            if (!_buffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager))
+            _buffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager);
+            if (manager == _manager)
                 return;
 
-            var document = manager.WorkspaceManager?.Document;
-            if (document == null) return;
+            if (_manager != null)
+                _manager.StateChanged -= OnStateChanged;
 
+            _manager = manager;
+
+            if (_manager != null)
+            {
+                _manager.StateChanged += OnStateChanged;
+                OnStateChanged(_manager, EventArgs.Empty);
+            }
+        }
+
+        private void OnStateChanged(object sender, EventArgs e)
+        {
+            var state = ((T4ProjectionBufferManager)sender).CurrentState;
+            if (state == null || _results?.State == state)
+                return;
+
+            _ = ThreadHelper.JoinableTaskFactory.RunAsync(() => UpdateDiagnosticsAsync(state));
+        }
+
+        private async Task UpdateDiagnosticsAsync(T4ProjectionState state)
+        {
+            await TaskScheduler.Default;
+
+            var newTags = new List<ITagSpan<IErrorTag>>();
             try
             {
-                _cts = new CancellationTokenSource();
-                var diagnostics = GetDiagnosticsAsync(document, _cts.Token).Result;
-                var snapshot = _buffer.CurrentSnapshot;
-                var newTags = new List<ITagSpan<IErrorTag>>();
+                var diagnostics = await GetDiagnosticsAsync(state.Document, CancellationToken.None);
+                var snapshot = state.Snapshot;
 
                 foreach (var diag in diagnostics)
                 {
@@ -89,10 +120,10 @@ namespace T4Editor.Projection
                         continue;
 
                     var genSpan = diag.Location.SourceSpan;
-                    
+
                     // Map generated position back to T4
-                    int? t4Start = manager.MapFromGenerated(genSpan.Start);
-                    int? t4End = manager.MapFromGenerated(genSpan.End);
+                    int? t4Start = state.Generated.MapFromGenerated(genSpan.Start);
+                    int? t4End = state.Generated.MapFromGenerated(genSpan.End);
 
                     if (!t4Start.HasValue || !t4End.HasValue)
                         continue;
@@ -111,15 +142,27 @@ namespace T4Editor.Projection
                     var tag = new ErrorTag(errorType, diag.GetMessage());
                     newTags.Add(new TagSpan<IErrorTag>(span, tag));
                 }
-
-                _currentTags = newTags;
-                TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(
-                    new SnapshotSpan(snapshot, 0, snapshot.Length)));
             }
             catch (Exception)
             {
                 // Don't crash on diagnostic failures
+                return;
             }
+
+            lock (_resultsLock)
+            {
+                // A newer state may have finished first; never go backwards
+                var current = _results;
+                if (current != null && current.Snapshot.Version.VersionNumber >= state.Snapshot.Version.VersionNumber)
+                    return;
+
+                _results = new DiagnosticResults(state, newTags);
+            }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var currentSnapshot = _buffer.CurrentSnapshot;
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(
+                new SnapshotSpan(currentSnapshot, 0, currentSnapshot.Length)));
         }
 
         private async Task<IEnumerable<Diagnostic>> GetDiagnosticsAsync(
@@ -132,16 +175,17 @@ namespace T4Editor.Projection
                 .Where(d => d.Location.IsInSource);
         }
 
-        public void Dispose()
+        private sealed class DiagnosticResults
         {
-            if (!_disposed)
+            public DiagnosticResults(T4ProjectionState state, List<ITagSpan<IErrorTag>> tags)
             {
-                _disposed = true;
-                _buffer.Changed -= OnBufferChanged;
-                _cts?.Cancel();
-                _cts?.Dispose();
-                _timer?.Dispose();
+                State = state;
+                Tags = tags;
             }
+
+            public T4ProjectionState State { get; }
+            public ITextSnapshot Snapshot => State.Snapshot;
+            public List<ITagSpan<IErrorTag>> Tags { get; }
         }
     }
 }

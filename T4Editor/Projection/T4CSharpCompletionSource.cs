@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace T4Editor.Projection
@@ -39,6 +40,8 @@ namespace T4Editor.Projection
         private readonly ITextStructureNavigatorSelectorService _navigatorService;
         private bool _disposed;
 
+        private const int CompletionTimeoutMs = 500;
+
         public T4CSharpCompletionSource(
             ITextBuffer textBuffer,
             ITextStructureNavigatorSelectorService navigatorService)
@@ -55,23 +58,44 @@ namespace T4Editor.Projection
             if (!_textBuffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager))
                 return;
 
-            var document = manager.WorkspaceManager?.Document;
-            if (document == null) return;
-
             // Get caret position in the T4 buffer
             var caretPoint = session.TextView.Caret.Position.BufferPosition;
             int t4Position = caretPoint.Position;
 
+            // Completion usually triggers on the keystroke that just happened, before the
+            // debounced regeneration: use a projection that includes it
+            T4ProjectionState state;
+            try
+            {
+                state = manager.GetStateForSnapshot(caretPoint.Snapshot);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            if (state == null) return;
+
             // Map to generated C# position
-            int? generatedPosition = manager.MapToGenerated(t4Position);
+            int? generatedPosition = state.Generated.MapToGenerated(t4Position);
             if (!generatedPosition.HasValue)
                 return; // Not inside a C# block
 
-            // Query Roslyn completions (avoid deadlock by using JTF or ConfigureAwait false)
+            // This legacy completion API is synchronous, so Roslyn runs on the thread pool
+            // with a bounded wait: a slow query (e.g. the first one) yields no results
+            // instead of freezing the UI thread
             IEnumerable<CompletionItem> completions;
+            var cts = new CancellationTokenSource();
             try
             {
-                completions = Task.Run(() => GetRoslynCompletionsAsync(document, generatedPosition.Value)).Result;
+                var completionTask = Task.Run(() => GetRoslynCompletionsAsync(state.Document, generatedPosition.Value, cts.Token));
+#pragma warning disable VSTHRD002 // Bounded wait; the task never needs the UI thread
+                if (!completionTask.Wait(CompletionTimeoutMs))
+                {
+                    cts.Cancel();
+                    return;
+                }
+                completions = completionTask.Result;
+#pragma warning restore VSTHRD002
             }
             catch (Exception)
             {
@@ -102,14 +126,14 @@ namespace T4Editor.Projection
         }
 
         private async Task<IEnumerable<CompletionItem>> GetRoslynCompletionsAsync(
-            Document document, int position)
+            Document document, int position, CancellationToken token)
         {
             try
             {
                 var completionService = CompletionService.GetService(document);
                 if (completionService == null) return null;
 
-                var results = await completionService.GetCompletionsAsync(document, position);
+                var results = await completionService.GetCompletionsAsync(document, position, cancellationToken: token);
                 return results?.Items;
             }
             catch (Exception)

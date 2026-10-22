@@ -95,6 +95,7 @@
     <Compile Include="Projection\T4CSharpWorkspaceManager.cs" />
     <Compile Include="Projection\T4ProjectionBufferManager.cs" />
     <Compile Include="Projection\T4ProjectionBufferManagerProvider.cs" />
+    <Compile Include="Projection\T4ProjectionState.cs" />
     <Compile Include="Projection\T4CSharpCompletionSource.cs" />
     <Compile Include="Projection\T4CSharpErrorTagger.cs" />
     <Compile Include="Projection\T4CSharpSyntaxClassifier.cs" />
