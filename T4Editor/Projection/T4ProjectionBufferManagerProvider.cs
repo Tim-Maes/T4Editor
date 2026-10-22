@@ -19,20 +19,19 @@ namespace T4Editor.Projection
         {
             var buffer = textView.TextBuffer;
 
-            // Only create one manager per buffer (multiple views may share a buffer)
-            if (buffer.Properties.ContainsProperty(typeof(T4ProjectionBufferManager)))
-                return;
+            // One manager per buffer, shared by all its views (split window, New Window);
+            // it lives until the last of those views closes
+            var manager = buffer.Properties.GetOrCreateSingletonProperty(
+                typeof(T4ProjectionBufferManager),
+                () => new T4ProjectionBufferManager(buffer));
+            manager.AddView();
 
-            var manager = new T4ProjectionBufferManager(buffer);
-            buffer.Properties.AddProperty(typeof(T4ProjectionBufferManager), manager);
-
-            // Clean up when the view is closed
             textView.Closed += (s, e) =>
             {
-                if (buffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager mgr))
+                if (manager.RemoveView())
                 {
                     buffer.Properties.RemoveProperty(typeof(T4ProjectionBufferManager));
-                    mgr.Dispose();
+                    manager.Dispose();
                 }
             };
         }

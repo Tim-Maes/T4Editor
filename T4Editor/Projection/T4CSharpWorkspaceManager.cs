@@ -63,15 +63,16 @@ namespace T4Editor.Projection
         }
 
         /// <summary>
-        /// Updates the generated C# document content.
+        /// Updates the generated C# document content and returns the document for exactly that text.
         /// </summary>
-        public void UpdateDocument(string csharpCode)
+        public Document UpdateDocument(string csharpCode)
         {
-            if (_workspace == null || _documentId == null) return;
+            if (_workspace == null || _documentId == null) return null;
 
             var sourceText = SourceText.From(csharpCode);
             var solution = _workspace.CurrentSolution.WithDocumentText(_documentId, sourceText);
             _workspace.TryApplyChanges(solution);
+            return solution.GetDocument(_documentId);
         }
 
         /// <summary>

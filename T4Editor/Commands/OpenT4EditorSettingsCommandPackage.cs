@@ -42,15 +42,7 @@ namespace T4Editor.Commands
 
             if (Settings.Default.FirstInstall)
             {
-                // Use the new robust theme detection instead of hardcoded color comparison
-                if (ThemeDetector.IsDarkTheme())
-                {
-                    SetDarkThemeColors();
-                }
-                else
-                {
-                    SetLightThemeColors();
-                }
+                ApplyThemeColors(ThemeDetector.IsDarkTheme(), overwriteCustomColors: true);
 
                 Settings.Default.FirstInstall = false;
                 Settings.Default.Save();
@@ -61,42 +53,69 @@ namespace T4Editor.Commands
 
         private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
         {
-            // Use the new robust theme detection instead of hardcoded color comparison
-            if (ThemeDetector.IsDarkTheme())
+            // Keep colors the user picked; only move the ones still at the other theme's defaults
+            ApplyThemeColors(ThemeDetector.IsDarkTheme(), overwriteCustomColors: false);
+        }
+
+        private static readonly Dictionary<string, string> DarkThemeColors = new Dictionary<string, string>
+        {
+            [nameof(Settings.ClassFeatureBlockColor)] = "#DEB887",
+            [nameof(Settings.ControlBlockColor)] = "#FFEBCD",
+            [nameof(Settings.DirectiveColor)] = "#C0C0C0",
+            [nameof(Settings.OutputColor)] = "#FFFFFF",
+            [nameof(Settings.InjectedColor)] = "#DAA520",
+            [nameof(Settings.TagBackground)] = "#FFFAFAD2",
+            [nameof(Settings.TagColor)] = "#FF000000",
+        };
+
+        // Improved light theme colors with better contrast for readability
+        private static readonly Dictionary<string, string> LightThemeColors = new Dictionary<string, string>
+        {
+            [nameof(Settings.ClassFeatureBlockColor)] = "#8B4513",  // SaddleBrown - better contrast than gray
+            [nameof(Settings.ControlBlockColor)] = "#4682B4",       // SteelBlue - better visibility
+            [nameof(Settings.DirectiveColor)] = "#228B22",          // ForestGreen - better than muted olive
+            [nameof(Settings.OutputColor)] = "#2F4F4F",             // DarkSlateGray - much better contrast
+            [nameof(Settings.InjectedColor)] = "#B8860B",           // DarkGoldenrod - better than black
+            [nameof(Settings.TagBackground)] = "#F5F5DC",           // Beige - softer background
+            [nameof(Settings.TagColor)] = "#000080",                // Navy - better than pure black
+        };
+
+        private void ApplyThemeColors(bool isDarkTheme, bool overwriteCustomColors)
+        {
+            var newDefaults = isDarkTheme ? DarkThemeColors : LightThemeColors;
+            var oldDefaults = isDarkTheme ? LightThemeColors : DarkThemeColors;
+            bool changed = false;
+
+            foreach (var entry in newDefaults)
             {
-                SetDarkThemeColors();
+                var current = (string)Settings.Default[entry.Key];
+                if (overwriteCustomColors || IsSameColor(current, oldDefaults[entry.Key]))
+                {
+                    Settings.Default[entry.Key] = entry.Value;
+                    changed = true;
+                }
             }
-            else
+
+            if (changed)
             {
-                SetLightThemeColors();
+                Settings.Default.Save();
+                BatchUpdateColors();
             }
         }
 
-        private void SetDarkThemeColors()
+        /// <summary>
+        /// Compares colors by value: the color picker stores "#AARRGGBB" while defaults use "#RRGGBB".
+        /// </summary>
+        private static bool IsSameColor(string a, string b)
         {
-            Settings.Default.ClassFeatureBlockColor = "#DEB887";
-            Settings.Default.ControlBlockColor = "#FFEBCD";
-            Settings.Default.DirectiveColor = "#C0C0C0";
-            Settings.Default.OutputColor = "#FFFFFF";
-            Settings.Default.InjectedColor = "#DAA520";
-            Settings.Default.TagBackground = "#FFFAFAD2";
-            Settings.Default.TagColor = "#FF000000";
-            Settings.Default.Save();
-            BatchUpdateColors();
-        }
-
-        private void SetLightThemeColors()
-        {
-            // Improved light theme colors with better contrast for readability
-            Settings.Default.ClassFeatureBlockColor = "#8B4513";    // SaddleBrown - better contrast than gray
-            Settings.Default.ControlBlockColor = "#4682B4";         // SteelBlue - better visibility
-            Settings.Default.DirectiveColor = "#228B22";           // ForestGreen - better than muted olive
-            Settings.Default.OutputColor = "#2F4F4F";              // DarkSlateGray - much better contrast
-            Settings.Default.InjectedColor = "#B8860B";            // DarkGoldenrod - better than black
-            Settings.Default.TagBackground = "#F5F5DC";            // Beige - softer background
-            Settings.Default.TagColor = "#000080";                 // Navy - better than pure black
-            Settings.Default.Save();
-            BatchUpdateColors();
+            try
+            {
+                return (Color)ColorConverter.ConvertFromString(a) == (Color)ColorConverter.ConvertFromString(b);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public void BatchUpdateColors()

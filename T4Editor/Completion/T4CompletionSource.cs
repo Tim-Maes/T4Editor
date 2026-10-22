@@ -41,8 +41,9 @@ namespace T4Editor.Intellisense
             if (!_textBuffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager))
                 return false;
 
-            var caretPosition = session.TextView.Caret.Position.BufferPosition.Position;
-            return manager.MapToGenerated(caretPosition).HasValue;
+            var caretPoint = session.TextView.Caret.Position.BufferPosition;
+            var state = manager.GetStateForSnapshot(caretPoint.Snapshot);
+            return state?.Generated.MapToGenerated(caretPoint.Position).HasValue == true;
         }
 
         private ITrackingSpan FindTokenSpanAtPosition(ITrackingPoint point, ICompletionSession session)

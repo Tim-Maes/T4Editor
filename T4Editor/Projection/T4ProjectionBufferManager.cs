@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using System;
 using System.Threading;
@@ -9,15 +10,20 @@ namespace T4Editor.Projection
     /// Manages the lifecycle of the hidden C# buffer and Roslyn workspace
     /// for a single T4 document. Listens for edits and re-generates the
     /// C# document with debouncing for performance.
+    /// All generation work runs on a background thread; results are published
+    /// as an immutable <see cref="T4ProjectionState"/>.
     /// </summary>
     internal class T4ProjectionBufferManager : IDisposable
     {
         private readonly ITextBuffer _t4Buffer;
         private readonly T4CSharpDocumentGenerator _generator;
         private readonly T4CSharpWorkspaceManager _workspaceManager;
-        private GeneratedDocument _currentDocument;
+        private readonly object _regenerateLock = new object();
+        private volatile T4ProjectionState _currentState;
         private CancellationTokenSource _debounceCts;
-        private bool _disposed;
+        private bool _workspaceInitialized;
+        private int _viewCount;
+        private volatile bool _disposed;
 
         private const int DebounceDelayMs = 300;
 
@@ -27,63 +33,104 @@ namespace T4Editor.Projection
             _generator = new T4CSharpDocumentGenerator();
             _workspaceManager = new T4CSharpWorkspaceManager();
 
-            _workspaceManager.Initialize();
-            RegenerateDocument();
-
             _t4Buffer.Changed += OnBufferChanged;
-        }
 
-        /// <summary>The current generated document with span mappings</summary>
-        public GeneratedDocument CurrentDocument => _currentDocument;
-
-        /// <summary>The Roslyn workspace manager for querying language services</summary>
-        public T4CSharpWorkspaceManager WorkspaceManager => _workspaceManager;
-
-        /// <summary>
-        /// Maps a caret position in the T4 buffer to the generated C# document.
-        /// Returns null if the position is not within a C# code block.
-        /// </summary>
-        public int? MapToGenerated(int t4Position)
-        {
-            return _currentDocument?.MapToGenerated(t4Position);
+            // Creating the workspace loads Roslyn's MEF host, which is slow: do it off the UI thread
+            ScheduleRegeneration(0);
         }
 
         /// <summary>
-        /// Maps a position in the generated C# back to the T4 buffer.
+        /// The latest published projection, or null until the first generation completes.
+        /// It may lag behind the buffer's current snapshot while an edit is being debounced.
         /// </summary>
-        public int? MapFromGenerated(int generatedPosition)
+        public T4ProjectionState CurrentState => _currentState;
+
+        /// <summary>
+        /// Raised on a background thread whenever a new <see cref="CurrentState"/> is published.
+        /// </summary>
+        public event EventHandler StateChanged;
+
+        /// <summary>Registers a text view using this manager. UI thread only.</summary>
+        public void AddView() => _viewCount++;
+
+        /// <summary>Unregisters a text view; returns true when no views are left. UI thread only.</summary>
+        public bool RemoveView() => --_viewCount <= 0;
+
+        /// <summary>
+        /// Returns a projection matching <paramref name="snapshot"/> exactly. When the published state
+        /// is older, a fresh one is generated on the spot without touching the workspace, which is
+        /// cheap: generation is plain string processing and forking a Roslyn document is incremental.
+        /// Returns null if no state has been published yet.
+        /// </summary>
+        public T4ProjectionState GetStateForSnapshot(ITextSnapshot snapshot)
         {
-            return _currentDocument?.MapFromGenerated(generatedPosition);
+            var state = _currentState;
+            if (state == null || state.Snapshot == snapshot)
+                return state;
+
+            var generated = _generator.Generate(snapshot.GetText());
+            var document = state.Document.WithText(SourceText.From(generated.CSharpCode));
+            return new T4ProjectionState(snapshot, generated, document);
         }
 
         private void OnBufferChanged(object sender, TextContentChangedEventArgs e)
+        {
+            ScheduleRegeneration(DebounceDelayMs);
+        }
+
+        private void ScheduleRegeneration(int delayMs)
         {
             // Debounce: cancel previous pending regeneration
             _debounceCts?.Cancel();
             _debounceCts = new CancellationTokenSource();
             var token = _debounceCts.Token;
 
-            Task.Delay(DebounceDelayMs, token).ContinueWith(t =>
+            _ = Task.Delay(delayMs, token).ContinueWith(t =>
             {
-                if (!t.IsCanceled && !_disposed)
+                if (!t.IsCanceled)
                 {
-                    RegenerateDocument();
+                    RegenerateDocument(token);
                 }
             }, TaskScheduler.Default);
         }
 
-        private void RegenerateDocument()
+        private void RegenerateDocument(CancellationToken token)
         {
-            try
+            // Serialize regenerations so the workspace and published state always move forward together
+            lock (_regenerateLock)
             {
-                var snapshot = _t4Buffer.CurrentSnapshot;
-                var text = snapshot.GetText();
-                _currentDocument = _generator.Generate(text);
-                _workspaceManager.UpdateDocument(_currentDocument.CSharpCode);
+                if (_disposed || token.IsCancellationRequested)
+                    return;
+
+                try
+                {
+                    var snapshot = _t4Buffer.CurrentSnapshot;
+                    if (_currentState?.Snapshot == snapshot)
+                        return;
+
+                    if (!_workspaceInitialized)
+                    {
+                        _workspaceManager.Initialize();
+                        _workspaceInitialized = true;
+                    }
+
+                    var generated = _generator.Generate(snapshot.GetText());
+                    var document = _workspaceManager.UpdateDocument(generated.CSharpCode);
+                    if (document == null)
+                        return;
+
+                    _currentState = new T4ProjectionState(snapshot, generated, document);
+                }
+                catch (Exception)
+                {
+                    // Don't crash the editor on parse errors
+                    return;
+                }
             }
-            catch (Exception)
+
+            if (!_disposed)
             {
-                // Don't crash the editor on parse errors
+                StateChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -94,8 +141,17 @@ namespace T4Editor.Projection
                 _disposed = true;
                 _t4Buffer.Changed -= OnBufferChanged;
                 _debounceCts?.Cancel();
-                _debounceCts?.Dispose();
-                _workspaceManager.Dispose();
+                StateChanged = null;
+
+                // A regeneration may still be running (e.g. the initial workspace load);
+                // wait for it on a background thread instead of blocking the UI thread
+                _ = Task.Run(() =>
+                {
+                    lock (_regenerateLock)
+                    {
+                        _workspaceManager.Dispose();
+                    }
+                });
             }
         }
     }

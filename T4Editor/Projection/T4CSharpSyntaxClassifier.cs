@@ -1,15 +1,16 @@
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using RoslynClassification = Microsoft.CodeAnalysis.Classification;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace T4Editor.Projection
 {
@@ -34,12 +35,18 @@ namespace T4Editor.Projection
         }
     }
 
+    /// <summary>
+    /// Roslyn classification runs in the background whenever the projection is regenerated.
+    /// <see cref="GetClassificationSpans"/> only reads the latest results, translating them
+    /// to the requested snapshot while newer results are still being computed.
+    /// </summary>
     internal class T4CSharpSyntaxClassifier : IClassifier
     {
         private readonly ITextBuffer _buffer;
         private readonly IClassificationTypeRegistryService _registry;
-        private ITextSnapshot _lastSnapshot;
-        private List<ClassificationSpan> _cachedSpans = new List<ClassificationSpan>();
+        private readonly object _resultsLock = new object();
+        private T4ProjectionBufferManager _manager;
+        private volatile ClassificationResults _results;
 
         public T4CSharpSyntaxClassifier(
             ITextBuffer buffer,
@@ -47,50 +54,113 @@ namespace T4Editor.Projection
         {
             _buffer = buffer;
             _registry = registry;
-            _buffer.Changed += OnBufferChanged;
         }
 
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
 
-        private void OnBufferChanged(object sender, TextContentChangedEventArgs e)
-        {
-            // Invalidate cache; reclassify on next request
-            _lastSnapshot = null;
-        }
-
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
-            var snapshot = span.Snapshot;
+            EnsureSubscribed();
 
-            // Use cached results if snapshot hasn't changed
-            if (_lastSnapshot == snapshot && _cachedSpans.Count > 0)
+            var result = new List<ClassificationSpan>();
+            var results = _results;
+            if (results == null)
+                return result;
+
+            if (results.Snapshot == span.Snapshot)
             {
-                return FilterSpans(_cachedSpans, span);
+                foreach (var classified in results.Spans)
+                {
+                    if (classified.Span.IntersectsWith(span))
+                        result.Add(classified);
+                }
+                return result;
             }
 
-            if (!_buffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager))
-                return new List<ClassificationSpan>();
+            // Results lag behind while the projection is regenerated after an edit:
+            // translate them so colors follow the text until fresh results arrive
+            var requested = span.TranslateTo(results.Snapshot, SpanTrackingMode.EdgeInclusive);
+            foreach (var classified in results.Spans)
+            {
+                if (!classified.Span.IntersectsWith(requested))
+                    continue;
 
-            var document = manager.WorkspaceManager?.Document;
-            var generatedDoc = manager.CurrentDocument;
-            if (document == null || generatedDoc == null)
-                return new List<ClassificationSpan>();
+                var translated = classified.Span.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
+                if (translated.Length > 0 && translated.IntersectsWith(span))
+                    result.Add(new ClassificationSpan(translated, classified.ClassificationType));
+            }
+            return result;
+        }
 
-            // Get Roslyn classifications (run synchronously on thread pool to avoid deadlock)
-            List<RoslynClassification.ClassifiedSpan> classifiedSpans;
+        /// <summary>
+        /// Attaches to the buffer's projection manager, which is created by a view listener
+        /// and replaced if all views close and the buffer is opened again. UI thread only.
+        /// </summary>
+        private void EnsureSubscribed()
+        {
+            _buffer.Properties.TryGetProperty(typeof(T4ProjectionBufferManager), out T4ProjectionBufferManager manager);
+            if (manager == _manager)
+                return;
+
+            if (_manager != null)
+                _manager.StateChanged -= OnStateChanged;
+
+            _manager = manager;
+
+            if (_manager != null)
+            {
+                _manager.StateChanged += OnStateChanged;
+                OnStateChanged(_manager, EventArgs.Empty);
+            }
+        }
+
+        private void OnStateChanged(object sender, EventArgs e)
+        {
+            var state = ((T4ProjectionBufferManager)sender).CurrentState;
+            if (state == null || _results?.State == state)
+                return;
+
+            _ = ThreadHelper.JoinableTaskFactory.RunAsync(() => ClassifyAsync(state));
+        }
+
+        private async Task ClassifyAsync(T4ProjectionState state)
+        {
+            await TaskScheduler.Default;
+
+            List<ClassificationSpan> spans;
             try
             {
-                classifiedSpans = Task.Run(() => GetClassificationsAsync(document)).Result;
+                spans = await GetClassificationSpansAsync(state);
             }
             catch (Exception)
             {
-                return new List<ClassificationSpan>();
+                return;
             }
 
-            if (classifiedSpans == null)
-                return new List<ClassificationSpan>();
+            lock (_resultsLock)
+            {
+                // A newer state may have finished first; never go backwards
+                var current = _results;
+                if (current != null && current.Snapshot.Version.VersionNumber >= state.Snapshot.Version.VersionNumber)
+                    return;
+
+                _results = new ClassificationResults(state, spans);
+            }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var snapshot = _buffer.CurrentSnapshot;
+            ClassificationChanged?.Invoke(this, new ClassificationChangedEventArgs(
+                new SnapshotSpan(snapshot, 0, snapshot.Length)));
+        }
+
+        private async Task<List<ClassificationSpan>> GetClassificationSpansAsync(T4ProjectionState state)
+        {
+            var text = await state.Document.GetTextAsync();
+            var classifiedSpans = await RoslynClassification.Classifier.GetClassifiedSpansAsync(
+                state.Document, TextSpan.FromBounds(0, text.Length), CancellationToken.None);
 
             // Map Roslyn classifications back to T4 positions
+            var snapshot = state.Snapshot;
             var result = new List<ClassificationSpan>();
             foreach (var classified in classifiedSpans)
             {
@@ -99,8 +169,8 @@ namespace T4Editor.Projection
                     continue;
 
                 // Map start and end from generated C# back to T4
-                int? t4Start = generatedDoc.MapFromGenerated(classified.TextSpan.Start);
-                int? t4End = generatedDoc.MapFromGenerated(classified.TextSpan.End);
+                int? t4Start = state.Generated.MapFromGenerated(classified.TextSpan.Start);
+                int? t4End = state.Generated.MapFromGenerated(classified.TextSpan.End);
 
                 if (!t4Start.HasValue || !t4End.HasValue)
                     continue;
@@ -116,18 +186,7 @@ namespace T4Editor.Projection
                     classificationType));
             }
 
-            _cachedSpans = result;
-            _lastSnapshot = snapshot;
-
-            return FilterSpans(result, span);
-        }
-
-        private async Task<List<RoslynClassification.ClassifiedSpan>> GetClassificationsAsync(Document document)
-        {
-            var text = await document.GetTextAsync();
-            var spans = await Microsoft.CodeAnalysis.Classification.Classifier.GetClassifiedSpansAsync(
-                document, TextSpan.FromBounds(0, text.Length), CancellationToken.None);
-            return spans.ToList();
+            return result;
         }
 
         private IClassificationType MapRoslynClassification(string roslynType)
@@ -206,15 +265,17 @@ namespace T4Editor.Projection
             return _registry.GetClassificationType(vsType);
         }
 
-        private List<ClassificationSpan> FilterSpans(List<ClassificationSpan> spans, SnapshotSpan range)
+        private sealed class ClassificationResults
         {
-            var result = new List<ClassificationSpan>();
-            foreach (var span in spans)
+            public ClassificationResults(T4ProjectionState state, List<ClassificationSpan> spans)
             {
-                if (span.Span.IntersectsWith(range))
-                    result.Add(span);
+                State = state;
+                Spans = spans;
             }
-            return result;
+
+            public T4ProjectionState State { get; }
+            public ITextSnapshot Snapshot => State.Snapshot;
+            public List<ClassificationSpan> Spans { get; }
         }
     }
 }
