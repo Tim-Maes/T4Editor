@@ -102,9 +102,9 @@ When editing inside code blocks (`<# #>`, `<#+ #>`, `<#= #>`), you get full C# I
 
 | Visual Studio Edition | Version Support |
 |----------------------|----------------|
-| **Community** | 2019 (16.0+), 2022 (17.0+) |
-| **Professional** | 2019 (16.0+), 2022 (17.0+) |
-| **Enterprise** | 2019 (16.0+), 2022 (17.0+) |
+| **Community** | 2019 (16.0+), 2022 (17.0+), 2026 (18.0+) |
+| **Professional** | 2019 (16.0+), 2022 (17.0+), 2026 (18.0+) |
+| **Enterprise** | 2019 (16.0+), 2022 (17.0+), 2026 (18.0+) |
 
 ## Supported File Types
 
